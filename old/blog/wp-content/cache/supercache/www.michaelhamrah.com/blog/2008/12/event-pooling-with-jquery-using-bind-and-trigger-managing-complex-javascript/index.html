@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Event Pooling with jQuery Using Bind and Trigger: Managing Complex JavascriptAdventures in HttpContext | Adventures in HttpContext</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.michaelhamrah.com/blog/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Feed" href="http://www.michaelhamrah.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Comments Feed" href="http://www.michaelhamrah.com/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript Comments Feed" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/feed/" />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<link rel='stylesheet' id='publish-style-css'  href='http://www.michaelhamrah.com/blog/wp-content/themes/publish/style.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='sharedaddy-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.css?ver=2.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-includes/js/jquery/jquery.js?ver=1.8.3'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/jquery.syntax.min.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.4.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.michaelhamrah.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.michaelhamrah.com/blog/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Best Comment Ever' href='http://www.michaelhamrah.com/blog/2008/12/best-comment-ever/' />
+<link rel='next' title='Hiring Software Developers: The In House Interview (Open Ended Questions)' href='http://www.michaelhamrah.com/blog/2008/12/hiring-software-developers-the-in-house-interview-open-ended-questions/' />
+<meta name="generator" content="WordPress 3.5.1" />
+<link rel='shortlink' href='http://wp.me/pnRto-T' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[122,240] -->
+<meta name="description" content="Managing Complexity in the UI As everyone knows, the more dependencies you have in a system, the harder maintaining that system is. Javascript is no" />
+<link rel="canonical" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/" />
+<!-- /all in one seo pack -->
+	<link rel="stylesheet" href="http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/wp-fixes.css" type="text/css" media="screen" />
+	<script type="text/javascript">
+		jQuery.noConflict(); jQuery(document).ready(function($) { $.syntax({root: 'http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/'}) });
+	</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript" />
+<meta property="og:url" content="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/" />
+<meta property="og:description" content="Managing Complexity in the UI As everyone knows, the more dependencies you have in a system, the harder maintaining that system is.  Javascript is no exception- and orchestrating actions across com..." />
+<meta property="og:site_name" content="Adventures in HttpContext" />
+<meta property="og:image" content="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/observer-300x91.png" />
+<meta property="og:image" content="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/event-pool-300x147.png" />
+<meta property="og:image" content="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fevent-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript%2f&amp;bgcolor=0000FF" />
+<style type="text/css">
+.widget_twitter li {
+	word-wrap: break-word;
+}
+</style>
+<!-- Google Analytics Tracking by Google Analyticator 6.4.3: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = ['zip'];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-6576586-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+        
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</head>
+
+<body class="single single-post postid-55 single-format-standard">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+					<a class="site-logo" href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">
+				<img class="no-grav" src="http://gravatar.com/avatar/de52b8e08282372084fdbcc4c2fe5f38/?s=100&#038;d=identicon" height="100" width="100" alt="Adventures in HttpContext" />
+			</a>
+				<hgroup>
+			<h1 class="site-title"><a href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">Adventures in HttpContext</a></h1>
+			<h2 class="site-description">All the stuff after &quot;Hello, World!&quot;</h2>
+		</hgroup>
+
+		<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<div class="menu-home-container"><ul id="menu-home" class="menu"><li id="menu-item-808" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-808"><a href="http://www.michaelhamrah.com">Home</a></li>
+<li id="menu-item-546" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-546"><a href="http://www.michaelhamrah.com/blog/about/">About</a></li>
+<li id="menu-item-551" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-551"><a href="http://twitter.com/mhamrah">@mhamrah</a></li>
+<li id="menu-item-552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-552"><a href="http://www.flickr.com/photos/hamrah/tags/favorite/">Flickr</a></li>
+<li id="menu-item-809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-809"><a href="http://LinkedIn.com/in/Hamrah">LinkedIn</a></li>
+</ul></div>		</nav><!-- .site-navigation .main-navigation -->
+
+			</header><!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+
+			
+				
+<article id="post-55" class="post-55 post type-post status-publish format-standard hentry category-programming tag-designpatterns tag-jquery">
+	<header class="entry-header">
+		<h1 class="entry-title">Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'adventuresinhttpcontext';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<p><strong>Managing Complexity in the UI</strong></p>
+
+<p>As everyone knows, the more dependencies you have in a system, the harder maintaining that system is.  Javascript is no exception- and orchestrating actions across complex user interfaces can be a nightmare if not done properly.</p>
+
+<p><span id="more-55"></span></p>
+
+<p>Luckily, there&#8217;s a great pattern for orchestrating complex interaction in a disconnected way. No, it&#8217;s not the Observer pattern.  It&#8217;s a take on the Observer pattern called Event Pooling which is a piece of cake with jQuery&#8217;s <a title="jQuery Bind" href="http://docs.jquery.com/Events/bind">bind</a> and <a title="jQuery Trigger" href="http://docs.jquery.com/Events/trigger">trigger</a> functions.  <a title="jQuery bind and trigger example" href="http://www.michaelhamrah.com/blog/wp-content/uploads/jqueryEventPool/index.html" target="_blank">For the get to the code folks, here&#8217;s an example of using jQuery&#8217;s bind and trigger for event pooling</a>.</p>
+
+<p><strong>Problems with the Observer Pattern</strong></p>
+
+<p>The observer pattern is great for some things, but it still requires a dependency between the observer and the subject.  The publish/subscribe scenario creates a direct relationship between two objects- and makes orchestrating a lot of events difficult when you have to manage so many direct references.</p>
+
+<div id="attachment_56" class="wp-caption aligncenter" style="width: 310px"><a href="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/observer.png"><img class="size-medium wp-image-56" title="observer pattern" src="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/observer-300x91.png" alt="observer pattern" width="300" height="91" /></a><p class="wp-caption-text">observer pattern</p></div>
+
+<p><strong>Event Pooling</strong></p>
+
+<p>Event pooling is simply a variation on the Observer pattern, where a &#8220;middle man&#8221; is used to orchestrate the publish/subscribe system.  First, an observer will register with the event pool by saying &#8220;I need to call this function when this event is fired&#8221;.  Next, the subject will tell the event pool &#8220;I&#8217;m firing this event&#8221;.  Finally, the event pool will call the function the observer registered on behalf of the subject.  The observer and subject only need to know about the event pool, not each other.</p>
+
+<div id="attachment_57" class="wp-caption aligncenter" style="width: 310px"><a href="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/event-pool.png"><img class="size-medium wp-image-57" title="event-pool" src="http://www.michaelhamrah.com/blog/wp-content/uploads/2008/12/event-pool-300x147.png" alt="Event Pool" width="300" height="147" /></a><p class="wp-caption-text">Event Pool</p></div>
+
+<p>This provides some cool functionality- especially because if you need to reference the subject (called the publisher), you can get a direct reference via the event pool.  This is similar to the object sender parameter in .NET&#8217;s event system.</p>
+
+<p><strong>Show me Code!</strong></p>
+
+<p>We are going to do two things: First, update a span tag to show an address when a user enters a name, city, or state.  Second, show some complex behavior by daisy changing events and binding a single function to multiple triggers. <a title="jQuery bind and trigger example" href="http://www.michaelhamrah.com/blog/wp-content/uploads/jqueryEventPool/index.html" target="_blank">Check out the example.</a></p>
+
+<p>We have an UpdateOutput() function that updates the span:</p>
+
+<p><pre class="syntax js">
+function UpdateOutput() {
+    var name = $('#txtName').val();
+    var address = $('#txtAddress').val();
+    var city = $('#txtCity').val();</p>
+
+<pre><code>$('#output').html(name + ' ' + address + ' ' + city);
+</code></pre>
+
+<p>}
+</pre></p>
+
+<p>This is wired up via the bind function:</p>
+
+<p><pre class="syntax js">
+$(document).bind('NAME_CHANGE ADDRESS_CHANGE CITY_CHANGE', function() {
+    UpdateOutput();
+});
+</pre></p>
+
+<p>Notice how we&#8217;re wiring up multiple event names with a single function which calls UpdateOutput.  This allows us to encapsulate common functionality in a single function which could be called from various sources.</p>
+
+<p>We&#8217;re also binding and firing to $(document).  Document provides a global bucket all functionality has access to- a static class that can be referenced from anywhere, making pooling easy.</p>
+
+<p>We can also wire up another function with the NAME_CHANGE event without effecting any other logic:</p>
+
+<p><pre class="syntax js">
+$(document).bind('NAME_CHANGE', function(e) {
+    UpdateName();
+    UpdateOtherText(e);
+});
+</pre></p>
+
+<p>Here, NAME_CHANGE will also trigger UpdateName and UpdateOther.</p>
+
+<p>Firing an event is done with the trigger function:</p>
+
+<p><pre class="syntax js">
+$('#txtAddress').keyup(function() {
+    $(document).trigger('ADDRESS_CHANGE');
+});
+$('#txtCity').keyup(function() {
+    $(document).trigger('CITY_CHANGE');
+});
+</pre></p>
+
+<p>It can also be called directly from html:</p>
+
+<p><pre class="syntax html escaped">
+Name: &lt;input type=&quot;text&quot; id=&quot;txtName&quot; onkeyup=&quot;javascript:$(document).trigger('NAME_CHANGE');&quot; /&gt;
+</pre></p>
+
+<p><strong>Advanced Functionality</strong></p>
+
+<p>There are two more things you can do with bind and trigger: Inspect who fired the trigger (this can be important if you&#8217;re wiring up a single function from multiple subjects) and pass data to the event.</p>
+
+<p>In our next example, our function definition takes in two parameters: e, which is the event&#8217;s sender, and data, a generic data bucket:</p>
+
+<p><pre class="syntax js">
+$(document).bind('FIRST_UPDATED', function(e, data) {
+    UpdateOtherText(e, data);
+});
+</pre></p>
+
+<p>The first parameter will always be the event&#8217;s sender.  You can wire up as many other parameters as you want.  You pass data as a comma delimited list between brackets [parm1,parm2] when calling trigger:</p>
+
+<p><pre class="syntax js">
+$(document).trigger('FIRST_UPDATED', [data]);
+</pre></p>
+
+<p>and from html:</p>
+
+<p><pre class="syntax js escaped">
+&lt;input type=&quot;text&quot; id=&quot;txtData&quot; onkeyup=&quot;javascript:$(document).trigger('DATA_CHANGED', [$(this).val()]);&quot; /&gt;
+</pre></p>
+
+<p>The sender object has a couple of properties, but the most important is &#8216;type&#8217;, which let&#8217;s you know what triggered the event:</p>
+
+<p><pre class="syntax js">
+function UpdateOtherText(e, text) {
+var text;
+if (e.type == 'FIRST_UPDATED')
+ text = 'from first: ' + text;
+else
+ text = e.type;
+$('#eventFired').html(text);
+}
+</pre></p>
+
+<p>Check out my follow up article <a href="http://www.michaelhamrah.com/blog/index.php/2009/12/organizing-javascript-for-event-pooling-with-jquery/">Organizing Events for Event Pooling.</a></p>
+
+<p><a href="http://www.michaelhamrah.com/blog/index.php/2009/12/organizing-javascript-for-event-pooling-with-jquery/"></a>
+<a href="http://www.dotnetkicks.com/kick/?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fevent-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript%2f"><img src="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fevent-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript%2f&amp;bgcolor=0000FF" border="0" alt="kick it on DotNetKicks.com" /></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-55"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-55"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/?share=facebook" title="Share on Facebook" id="sharing-facebook-55"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-55"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div><div class='yarpp-related'>
+<strong class="related_posts">Related Posts:</strong> <ol>
+<li><a href='http://www.michaelhamrah.com/blog/2009/12/organizing-javascript-for-event-pooling-with-jquery/' rel='bookmark' title='Organizing Javascript for Event Pooling with jQuery'>Organizing Javascript for Event Pooling with jQuery</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2009/01/all-those-jquery-fans-new-event-delegation/' rel='bookmark' title='All those jQuery fans: new event delegation'>All those jQuery fans: new event delegation</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2010/02/using-flickr-and-jquery-to-learn-jsonp/' rel='bookmark' title='Using Flickr and jQuery to learn JSONP'>Using Flickr and jQuery to learn JSONP</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2010/08/the-new-webapp-architecture-asp-net-mvc-3-jquery-templating-with-pure-and-the-json-value-provider/' rel='bookmark' title='The New Web App Architecture: ASP.NET MVC 3, jQuery Templating with PURE and the Json Value Provider'>The New Web App Architecture: ASP.NET MVC 3, jQuery Templating with PURE and the Json Value Provider</a></li>
+</ol>
+<img src='http://yarpp.org/pixels/288c3ec03cb337c2e83ff8ec6c6de897'/>
+</div>
+			</div><!-- .entry-content -->
+
+	<footer class="entry-meta">
+		Posted on <a href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/" title="11:58 am" rel="bookmark"><time class="entry-date" datetime="2008-12-05T11:58:00+00:00" pubdate>December 5, 2008</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.		This entry was posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a> and tagged <a href="http://www.michaelhamrah.com/blog/tag/designpatterns/" rel="tag">designpatterns</a>, <a href="http://www.michaelhamrah.com/blog/tag/jquery/" rel="tag">jquery</a>. Bookmark the <a href="http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/" title="Permalink to Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript" rel="bookmark">permalink</a>.
+			</footer><!-- .entry-meta -->
+</article><!-- #post-55 -->
+
+					<nav role="navigation" id="nav-below" class="site-navigation post-navigation">
+		<h1 class="assistive-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="http://www.michaelhamrah.com/blog/2008/12/best-comment-ever/" rel="prev"><span class="meta-nav">&larr;</span> Best Comment Ever</a></div>		<div class="nav-next"><a href="http://www.michaelhamrah.com/blog/2008/12/hiring-software-developers-the-in-house-interview-open-ended-questions/" rel="next">Hiring Software Developers: The In House Interview (Open Ended Questions) <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+				
+<div id="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="comment even thread-even depth-1" id="dsq-comment-4">
+        <div id="dsq-comment-header-4" class="dsq-comment-header">
+            <cite id="dsq-cite-4">
+http://www.omsn.de                <span id="dsq-author-user-4">korbsan</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-4" class="dsq-comment-body">
+            <div id="dsq-comment-message-4" class="dsq-comment-message"><p>good article, thanks</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-5">
+        <div id="dsq-comment-header-5" class="dsq-comment-header">
+            <cite id="dsq-cite-5">
+http://www.subprint.com                <span id="dsq-author-user-5">Joseph McCann</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-5" class="dsq-comment-body">
+            <div id="dsq-comment-message-5" class="dsq-comment-message"><p>Awesome, AWESOME article.  Very succinct and informative.  Will put into practice right away.</p>
+
+<p>Question, how does this play into solid jQuery event delegation, say for elements added to the DOM on the fly, via AJAX or another method?  Can this concept be taken a step further to include event delegation?</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment byuser comment-author-admin bypostauthor even thread-even depth-1" id="dsq-comment-6">
+        <div id="dsq-comment-header-6" class="dsq-comment-header">
+            <cite id="dsq-cite-6">
+http://www.michaelhamrah.com                <span id="dsq-author-user-6">Michael</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-6" class="dsq-comment-body">
+            <div id="dsq-comment-message-6" class="dsq-comment-message"><p>Hey Joseph- great question.  The example above uses standard jQuery event handling to fire a trigger.  As you point out, jQuery won&#8217;t hook up these events when elements are added dynamically- which is why you need event delegation.</p>
+
+<p>I find the <a href="http://brandonaaron.net/docs/livequery/" rel="nofollow">livequery plugin</a> a great tool for ensuring dynamically added elements are wired correctly.</p>
+
+<p>I still like the level of abstraction explicitly firing a trigger brings to the table.  This allows two great benefits: multiple triggers can be fired in a single event and data can be processed or prepared before being passed to the trigger.  This allows the same binding to handle events in a uniform way from a variety of sources.</p>
+
+<p>Of course, there&#8217;s a couple of ways to skin a cat- so I&#8217;m sure you can fire triggers via some event delegation system.  But I find the combo of livequery and event pooling pretty slick for solving a lot of problems!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://blog.mirthlab.com/2008/12/08/jquery-event-pooling/' rel='external nofollow' class='url'>jQuery Event Pooling | MirthLab</a></p>
+    </li>
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-9">
+        <div id="dsq-comment-header-9" class="dsq-comment-header">
+            <cite id="dsq-cite-9">
+http://www.simplewebapp.com                <span id="dsq-author-user-9">mindreframer</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-9" class="dsq-comment-body">
+            <div id="dsq-comment-message-9" class="dsq-comment-message"><p>I think this pattern is called Message Bus on Client Side. Check this URL:</p>
+
+<ul>
+<li><a href="http://www.adamzastawski.com/post/Ride-the-Page-Bus-(TIBCO-PageBustrade3b)" rel="nofollow">http://www.adamzastawski.com/post/Ride-the-Page-Bus-(TIBCO-PageBustrade3b)</a>.aspx</li>
+</ul>
+
+<p>Dojo is fundamentally based on this approach, BTW. 
+Cheers, Roman</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-13">
+        <div id="dsq-comment-header-13" class="dsq-comment-header">
+            <cite id="dsq-cite-13">
+http://www.subprint.com                <span id="dsq-author-user-13">Joe McCann</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-13" class="dsq-comment-body">
+            <div id="dsq-comment-message-13" class="dsq-comment-message"><p>Nice Michael&#8230;yes, I have used livequery in the past, but have been trying to be more of a purist with event delegation so I figured I&#8217;d ask.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://weblogs.asp.net/yuanjian/archive/2008/12/10/interesting-finds-2008-12-08-2008-12-11.aspx' rel='external nofollow' class='url'>Interesting Finds: 2008.12.08~2008.12.11 - gOODiDEA.NET</a></p>
+    </li>
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-16">
+        <div id="dsq-comment-header-16" class="dsq-comment-header">
+            <cite id="dsq-cite-16">
+http://webdevvote.com                <span id="dsq-author-user-16">webdevvote</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-16" class="dsq-comment-body">
+            <div id="dsq-comment-message-16" class="dsq-comment-message"><p>You&#8217;re been voted!
+Track back from <a href="http://webdevvote.com/Javascript/Event_Pooling_with_jQuery_Using_Bind_and_Trigger_Managing_Complex_Jav" rel="nofollow">http://webdevvote.com/Javascript/Event_Pooling_with_jQuery_Using_Bind_and_Trigger_Managing_Complex_Jav</a></p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-21">
+        <div id="dsq-comment-header-21" class="dsq-comment-header">
+            <cite id="dsq-cite-21">
+http://www.thexvid.com/video/11020/comedy-club-ukraine-24-Ð Ò‘Ð¡Ñ“Ð¡ÐŒÐ¡â€š-Ð Ñ‘Ð Ñ˜Ð ÂµÐ Ð…Ð Ñ‘-Ð¡â€¡Ð ÂµÐ¡â€¦Ð Ñ•Ð Ð†Ð Â°                <span id="dsq-author-user-21">Den Flatieneiream</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-21" class="dsq-comment-body">
+            <div id="dsq-comment-message-21" class="dsq-comment-message"><p>Very usefull post.
+Thanks.
+P.S. I like your writing style.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-22">
+        <div id="dsq-comment-header-22" class="dsq-comment-header">
+            <cite id="dsq-cite-22">
+http://www.thexvid.com/articles/8906/coffee-cupping-for-the-fun-of-it                <span id="dsq-author-user-22">Tom Flatieneiream</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-22" class="dsq-comment-body">
+            <div id="dsq-comment-message-22" class="dsq-comment-message"><p>First of all congratulation for such a great site. I learned a lot reading article here today. I will make sure i visit this site once a day so i can learn more.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-125">
+        <div id="dsq-comment-header-125" class="dsq-comment-header">
+            <cite id="dsq-cite-125">
+http://www.dreinavarro.com/blog                <span id="dsq-author-user-125">Andrei Navarro</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-125" class="dsq-comment-body">
+            <div id="dsq-comment-message-125" class="dsq-comment-message"><p>Awesome article.</p>
+
+<p>I&#8217;ve always ran into situations where I need multiple events triggering a common functionality.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-126">
+        <div id="dsq-comment-header-126" class="dsq-comment-header">
+            <cite id="dsq-cite-126">
+http://blogs.claritycon.com/blogs/sean_devlin/default.aspx                <span id="dsq-author-user-126">Sean Devlin</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-126" class="dsq-comment-body">
+            <div id="dsq-comment-message-126" class="dsq-comment-message"><p>Michael,</p>
+
+<p>Great article. I did something similar recently for a project at work. My solution was homebrewed, since I didn&#8217;t know about jQuery&#8217;s support for custom events at the time. You can check out my solution <a href="http://blogs.claritycon.com/blogs/sean_devlin/archive/2009/06/23/a-lightweight-event-framework-in-javascript.aspx" rel="nofollow">here</a>.</p>
+
+<p>There are two things I like better about my solution. One is that it&#8217;s not tied to the DOM (the document, in your example), since I don&#8217;t think that makes sense for a &#8220;business logic&#8221; event. Two is a more natural interface for passing event arguments.</p>
+
+<p>One notable feature you call out for jQuery&#8217;s solution that I don&#8217;t see a simple way to add to mine is the optional reference to the caller.</p>
+
+<p>Anyway, if you get a chance to check it out, I&#8217;d love to hear your thoughts.</p>
+
+<p>Sean</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.netcrema.com/?p=6669' rel='external nofollow' class='url'>Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript | Adventures in HttpContext &laquo; Netcrema - creme de la social news via digg + delicious + stumpleupon + reddit</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.ilovenet.com.ar/2009-07-06/the-technology-post-for-july-6th-2009/' rel='external nofollow' class='url'>The Technology Post for July 6th, 2009 | I love .NET!</a></p>
+    </li>
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-129">
+        <div id="dsq-comment-header-129" class="dsq-comment-header">
+            <cite id="dsq-cite-129">
+                <span id="dsq-author-user-129">Mo</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-129" class="dsq-comment-body">
+            <div id="dsq-comment-message-129" class="dsq-comment-message"><p>Thanks for your work. Very understandable theoretically.</p>
+
+<p>But why don&#8217;t you write a workable code for the examples.</p>
+
+<p>I have no idea to handle these events like &#8220;NAME_CHANGE&#8221;,  &#8220;ADDRESS_CHANGE&#8221;,  &#8220;CITY_CHANGE&#8221; because they are not the standard events.</p>
+
+<p>Looking forward to your further explanation.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.nexoit.com.ar/the-technology-post-for-july-6th-2009/' rel='external nofollow' class='url'>The Technology Post for July 6th, 2009 | Nexo IT - Information Technology News</a></p>
+    </li>
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-131">
+        <div id="dsq-comment-header-131" class="dsq-comment-header">
+            <cite id="dsq-cite-131">
+http://www.pixeline.be                <span id="dsq-author-user-131">Alexandre Plennevaux</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-131" class="dsq-comment-body">
+            <div id="dsq-comment-message-131" class="dsq-comment-message"><p>@Mo: that&#8217;s the whole point, you know, &#8220;custom events&#8221;. You need to shift your perspective around embracing the pattern described in this post.</p>
+
+<p>Michael, i would like to know if you experimented this logic with the live(); binder, which pretty much does what livequery did and is integrated in the core since 1.3.0 . (I noticed your example uses 1.2.6).</p>
+
+<p>I&#8217;ll try to experiment it on my own but i &#8216;m in a tight schedule about refactoring a big jquery-based application, and your pattern seems really interesting. But my application uses livequery extensively, hence my question.</p>
+
+<p>Thanks for the great article!</p>
+
+<p>Alexandre</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://scribu.net/wordpress/event-pooling-with-wordpress.html' rel='external nofollow' class='url'>Event Pooling with WordPress | scribu</a></p>
+    </li>
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-133">
+        <div id="dsq-comment-header-133" class="dsq-comment-header">
+            <cite id="dsq-cite-133">
+http://www.2meter3.de/code/hoverFlow/                <span id="dsq-author-user-133">Ralf Stoltze</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-133" class="dsq-comment-body">
+            <div id="dsq-comment-message-133" class="dsq-comment-message"><p>While using inline event handlers is just considered bad practise, using the javascript: pseudo protocol within inline event handlers is simply wrong.</p>
+
+<p>Otherwise, good article!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment byuser comment-author-admin bypostauthor odd alt thread-odd thread-alt depth-1" id="dsq-comment-135">
+        <div id="dsq-comment-header-135" class="dsq-comment-header">
+            <cite id="dsq-cite-135">
+http://www.michaelhamrah.com                <span id="dsq-author-user-135">Michael</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-135" class="dsq-comment-body">
+            <div id="dsq-comment-message-135" class="dsq-comment-message"><p>Hey Ralf- you&#8217;re absolutely correct.  Unobtrusive javascript is the way to go.  There are three main benefits: all your js hook ups are in one place, it&#8217;s in an external file so it reduces the download size of the html page, and it keeps the html semantically correct.  This is helpful when porting your html code to different browsers or devices.</p>
+
+<p>Jeff Atwood has written about the dangerous of blindly copying and pasting code from the internet- I was just making the examples easier to write!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment byuser comment-author-admin bypostauthor even thread-even depth-1" id="dsq-comment-136">
+        <div id="dsq-comment-header-136" class="dsq-comment-header">
+            <cite id="dsq-cite-136">
+http://www.michaelhamrah.com                <span id="dsq-author-user-136">Michael</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-136" class="dsq-comment-body">
+            <div id="dsq-comment-message-136" class="dsq-comment-message"><p>@Alexandre- I wrote this article before the introduction of live() and die().  I know there are subtle yet important differences between live() and livequery- it&#8217;s worth checking it out further.  Maybe a topic for another article.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.lillbra.se/2009/07/links-for-2009-07-30/' rel='external nofollow' class='url'>lillbra &raquo; Blog Archive &raquo; links for 2009-07-30</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://benjaminboyle.com/?p=72' rel='external nofollow' class='url'>BenjaminBoyle.com &raquo; Blog Archive &raquo; Great jQuery event handling articles</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.michaelhamrah.com/blog/index.php/2009/12/organizing-events-for-event-pooling-with-jquery/' rel='external nofollow' class='url'>Organizing Events for Event Pooling with jQuery | Adventures in HttpContext</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.9efish.com/Event-Pooling-with-jQuery-Using-Bind-and-Trigger-Managing-Complex-Javascript' rel='external nofollow' class='url'>9eFish</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://tuts9.com/questions/5175/custom-events-and-event-pooling-in-jquery-whats-the-point' rel='external nofollow' class='url'>Custom events and event pooling in jQuery &#8211; What&#8217;s the point? | Webmaster Forum Archive</a></p>
+    </li>
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-1810">
+        <div id="dsq-comment-header-1810" class="dsq-comment-header">
+            <cite id="dsq-cite-1810">
+http://zygorguidesreview.wikispaces.com                <span id="dsq-author-user-1810">Zygor&#8217;s Guide</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1810" class="dsq-comment-body">
+            <div id="dsq-comment-message-1810" class="dsq-comment-message"><p>I read this just a few minutes ago and thought I&#8217;d pass it along although it&#8217;s not genuinely that relevant. For those who could relive yesterday what would you do differently?</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-1813">
+        <div id="dsq-comment-header-1813" class="dsq-comment-header">
+            <cite id="dsq-cite-1813">
+http://www.name623.com                <span id="dsq-author-user-1813">Name623</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1813" class="dsq-comment-body">
+            <div id="dsq-comment-message-1813" class="dsq-comment-message"><p><a href='http://www.google.com' rel="nofollow">Google</a></p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-1814">
+        <div id="dsq-comment-header-1814" class="dsq-comment-header">
+            <cite id="dsq-cite-1814">
+http://www.name624.com                <span id="dsq-author-user-1814">Name624</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1814" class="dsq-comment-body">
+            <div id="dsq-comment-message-1814" class="dsq-comment-message"><p>Thank you for this great article. Using jQuery trigger I&#8217;ve created an <a href='http://www.thoughtresults.com/observer-pattern-example' rel="nofollow">Observer Pattern Example</a>, which is really useful in front-end development.
+I also recommend reading these articles:
+<a href='http://www.thoughtresults.com/page-visibility' rel="nofollow">Page Visibility</a>
+<a href='http://www.thoughtresults.com/network-information-api' rel="nofollow">Network Information API</a>
+<a href='http://www.thoughtresults.com/contacts-api' rel="nofollow">Contacts API</a></p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-1817">
+        <div id="dsq-comment-header-1817" class="dsq-comment-header">
+            <cite id="dsq-cite-1817">
+                <span id="dsq-author-user-1817">eliseo abadia</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1817" class="dsq-comment-body">
+            <div id="dsq-comment-message-1817" class="dsq-comment-message"><p>muchas gracias , me ayudó mucho su pagina&#8230; gracias.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-1835">
+        <div id="dsq-comment-header-1835" class="dsq-comment-header">
+            <cite id="dsq-cite-1835">
+http://maty.us                <span id="dsq-author-user-1835">Michael Matyus</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1835" class="dsq-comment-body">
+            <div id="dsq-comment-message-1835" class="dsq-comment-message"><p>Been trying to understand binding and triggering. The article has given me some good background, unfortunately, <a href="http://www.michaelhamrah.com/blog/wp-content/uploads/jqueryEventPool/index.html" rel="nofollow">http://www.michaelhamrah.com/blog/wp-content/uploads/jqueryEventPool/index.html</a> is throwing a 404 <img src='http://www.michaelhamrah.com/blog/wp-includes/images/smilies/icon_sad.gif' alt=':(' class='wp-smiley' />  Help!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment byuser comment-author-admin bypostauthor even thread-even depth-1" id="dsq-comment-1836">
+        <div id="dsq-comment-header-1836" class="dsq-comment-header">
+            <cite id="dsq-cite-1836">
+http://www.michaelhamrah.com                <span id="dsq-author-user-1836">Michael</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1836" class="dsq-comment-body">
+            <div id="dsq-comment-message-1836" class="dsq-comment-message"><p>@Michael Matyus: the link is fixed.  Sorry about that!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://fatal-errors.com/change-this-when-firing-custom-events-in-jquery-using-trigger/10610' rel='external nofollow' class='url'>Change &#8216;this&#8217; when firing custom events in jQuery using $.trigger()</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.bennyn.de/programmierung/javascript/eigene-events-mit-jquery-bind-und-trigger.html' rel='external nofollow' class='url'>Eigene Events mit jQuery Bind und Trigger › Der Blog von Benny Neugebauer</a></p>
+    </li>
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://www.michaelhamrah.com/blog/2008/12/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript/';
+    var disqus_identifier = '55 http://www.michaelhamrah.com/blog/?p=55';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'adventuresinhttpcontext';
+    var disqus_title = "Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+        config.language = '';
+
+        /*
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = '?cf_action=sync_comments&post_id=55';
+
+            var firstScript = document.getElementsByTagName( "script" )[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+                    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+            {
+                'author_name':    "jQuery Event Pooling | MirthLab",
+                'author_url':    "http:\/\/blog.mirthlab.com\/2008\/12\/08\/jquery-event-pooling\/",
+                'date':            "12\/08\/2008 05:05 PM",
+                'excerpt':        "[...] If you're new here, you may want to subscribe to my RSS feed or follow me on Twitter. Thanks ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Interesting Finds: 2008.12.08~2008.12.11 - gOODiDEA.NET",
+                'author_url':    "http:\/\/weblogs.asp.net\/yuanjian\/archive\/2008\/12\/10\/interesting-finds-2008-12-08-2008-12-11.aspx",
+                'date':            "12\/10\/2008 10:06 PM",
+                'excerpt':        "[...] Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript | Adventures in HttpContext &laquo; Netcrema - creme de la social news via digg + delicious + stumpleupon + reddit",
+                'author_url':    "http:\/\/www.netcrema.com\/?p=6669",
+                'date':            "07\/06\/2009 01:16 PM",
+                'excerpt':        "[...] Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript | Adventures in HttpCo...michaelhamrah.com [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "The Technology Post for July 6th, 2009 | I love .NET!",
+                'author_url':    "http:\/\/www.ilovenet.com.ar\/2009-07-06\/the-technology-post-for-july-6th-2009\/",
+                'date':            "07\/06\/2009 09:06 PM",
+                'excerpt':        "[...] jQuery &#8211; Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript â€“ Tweeted by jQuery [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "The Technology Post for July 6th, 2009 | Nexo IT - Information Technology News",
+                'author_url':    "http:\/\/www.nexoit.com.ar\/the-technology-post-for-july-6th-2009\/",
+                'date':            "07\/06\/2009 09:57 PM",
+                'excerpt':        "[...] jQuery &#8211; Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript â€“ Tweeted by jQuery [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Event Pooling with WordPress | scribu",
+                'author_url':    "http:\/\/scribu.net\/wordpress\/event-pooling-with-wordpress.html",
+                'date':            "07\/07\/2009 06:11 AM",
+                'excerpt':        "[...] reading an article about Event Pooling with jQuery, I realised that WP has an equivalent system, namely hooks. Here ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "lillbra &raquo; Blog Archive &raquo; links for 2009-07-30",
+                'author_url':    "http:\/\/www.lillbra.se\/2009\/07\/links-for-2009-07-30\/",
+                'date':            "07\/30\/2009 09:09 PM",
+                'excerpt':        "[...] Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript Pattern fÃ¶r eventhantering i jQuery. (tags: jquery howto ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "BenjaminBoyle.com &raquo; Blog Archive &raquo; Great jQuery event handling articles",
+                'author_url':    "http:\/\/benjaminboyle.com\/?p=72",
+                'date':            "08\/06\/2009 08:24 AM",
+                'excerpt':        "[...] Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Organizing Events for Event Pooling with jQuery | Adventures in HttpContext",
+                'author_url':    "http:\/\/www.michaelhamrah.com\/blog\/index.php\/2009\/12\/organizing-events-for-event-pooling-with-jquery\/",
+                'date':            "12\/20\/2009 09:07 PM",
+                'excerpt':        "[...]  [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "9eFish",
+                'author_url':    "http:\/\/www.9efish.com\/Event-Pooling-with-jQuery-Using-Bind-and-Trigger-Managing-Complex-Javascript",
+                'date':            "12\/22\/2009 10:23 PM",
+                'excerpt':        "Event Pooling with jQuery Using Bind and Trigger: Managing Complex Javascript...<br \/><br \/>9efish.æ„Ÿè°¢<br \/>",
+                'type':            "trackback"            }
+,            {
+                'author_name':    "Custom events and event pooling in jQuery &#8211; What&#8217;s the point? | Webmaster Forum Archive",
+                'author_url':    "http:\/\/tuts9.com\/questions\/5175\/custom-events-and-event-pooling-in-jquery-whats-the-point",
+                'date':            "06\/07\/2010 07:01 AM",
+                'excerpt':        "[...] should be used but I&#8217;m still clearly missing the point. There is a very good article I read here ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Change &#8216;this&#8217; when firing custom events in jQuery using $.trigger()",
+                'author_url':    "http:\/\/fatal-errors.com\/change-this-when-firing-custom-events-in-jquery-using-trigger\/10610",
+                'date':            "10\/01\/2011 05:27 PM",
+                'excerpt':        "[...] I&#8217;m playing around with implementing an event pool pattern in my javascript, similar to what is described here: http:\/\/www.michaelhamrah.com\/blog\/2008\/12\/event-pooling-with-jquery-using-bind-and-trigger-managing-... ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Eigene Events mit jQuery Bind und Trigger › Der Blog von Benny Neugebauer",
+                'author_url':    "http:\/\/www.bennyn.de\/programmierung\/javascript\/eigene-events-mit-jquery-bind-und-trigger.html",
+                'date':            "07\/14\/2012 05:36 AM",
+                'excerpt':        "[...] die Verwendung dieses Programmierschemas als &#8220;Event Pooling&#8221; bezeichnet. Siehe Event Pooling with jQuery Using Bind and Trigger: Managing Complex ...<br \/>",
+                'type':            "pingback"            }
+        ],
+        'trackback_url': "http:\/\/www.michaelhamrah.com\/blog\/2008\/12\/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript\/trackback\/"    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.' + 'disqus.com' + '/embed.js?pname=wordpress&pver=2.74';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</script>
+
+			
+			</div><!-- #content .site-content -->
+		</div><!-- #primary .content-area -->
+
+		<div id="secondary" class="widget-area" role="complementary">
+						<aside id="twitter-3" class="widget widget_twitter"><h1 class="widget-title"><a href='http://twitter.com/mhamrah'>Twitter Updates</a></h1><ul class='tweets'>
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> Ja, es ist gut. Es ist gut. 				<a href="http://twitter.com/mhamrah/statuses/312538977448116224" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> I picture you sitting on a log cabin porch smoking a huge pipe, angrily grinning at the horizon, but it&#039;s really a German smile. 				<a href="http://twitter.com/mhamrah/statuses/312537991950249984" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				RT @<a href='http://twitter.com/subchild'>subchild</a>: Digg Blog, We&#039;re Building A Reader: <a href="http://blog.digg.com/post/45355701332/were-building-a-reader#.UUJTagci1Pw.twitter"> blog.digg.com/post/453557013…</a> 				<a href="http://twitter.com/mhamrah/statuses/312338856890466304" class="timesince">15&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			</ul></aside>		</div><!-- #secondary .widget-area -->
+
+	</div><!-- #main .site-main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a> Theme: Publish by <a href="http://kovshenin.com/" rel="designer">Konstantin Kovshenin</a>.		</div><!-- .site-info -->
+	</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		WPCOM_sharing_counts = {"http:\/\/www.michaelhamrah.com\/blog\/2008\/12\/event-pooling-with-jquery-using-bind-and-trigger-managing-complex-javascript\/":55}	</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.js?ver=20121205'></script>
+		<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=600,height=600' );
+				return false;
+			});
+		});
+		</script>
+		<script type='text/javascript' src='http://platform.twitter.com/widgets.js?ver=20111117'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201311'></script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?ver=2013Maraa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/wpgroho.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/small-menu.js?ver=20120206'></script>
+
+	<script src="http://stats.wordpress.com/e-201311.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.2',blog:'5687098',post:'55',tz:'-4'});
+	var load_cmc = function(){linktracker_init(5687098,55,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.210 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-03-15 10:50:57 -->
+
+<!-- super cache -->

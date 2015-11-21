@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Using Moq to Implement Tests (and Avoid Stubs)Adventures in HttpContext | Adventures in HttpContext</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.michaelhamrah.com/blog/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Feed" href="http://www.michaelhamrah.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Comments Feed" href="http://www.michaelhamrah.com/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Using Moq to Implement Tests (and Avoid Stubs) Comments Feed" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/feed/" />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<link rel='stylesheet' id='publish-style-css'  href='http://www.michaelhamrah.com/blog/wp-content/themes/publish/style.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='sharedaddy-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.css?ver=2.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-includes/js/jquery/jquery.js?ver=1.8.3'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/jquery.syntax.min.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.4.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.michaelhamrah.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.michaelhamrah.com/blog/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='How to Hire a Software Developer: The In House Interview (Part Two)' href='http://www.michaelhamrah.com/blog/2009/02/how-to-hire-a-software-developer-the-in-house-interview-part-two/' />
+<link rel='next' title='Tips for Managing ASP.NET MVC Views' href='http://www.michaelhamrah.com/blog/2009/02/tips-for-managin-aspnet-mvc-views/' />
+<meta name="generator" content="WordPress 3.5.1" />
+<link rel='shortlink' href='http://wp.me/pnRto-2l' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[122,209] -->
+<meta name="description" content="In my previous post on understanding TDD I discussed how to analyze existing code for creating unit tests. This was somewhat of reverse TDD, the idea being" />
+<link rel="canonical" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/" />
+<!-- /all in one seo pack -->
+	<link rel="stylesheet" href="http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/wp-fixes.css" type="text/css" media="screen" />
+	<script type="text/javascript">
+		jQuery.noConflict(); jQuery(document).ready(function($) { $.syntax({root: 'http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/'}) });
+	</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Using Moq to Implement Tests (and Avoid Stubs)" />
+<meta property="og:url" content="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/" />
+<meta property="og:description" content="In my previous post on understanding TDD I discussed how to analyze existing code for creating unit tests.  This was somewhat of &quot;reverse TDD&quot;, the idea being to look for what to needs to be tested..." />
+<meta property="og:site_name" content="Adventures in HttpContext" />
+<meta property="og:image" content="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2009%2f02%2fusing-moq-3-to-implement-tests-and-avoid-stubs%2f&amp;bgcolor=0000FF" />
+<style type="text/css">
+.widget_twitter li {
+	word-wrap: break-word;
+}
+</style>
+<!-- Google Analytics Tracking by Google Analyticator 6.4.3: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = ['zip'];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-6576586-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+        
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</head>
+
+<body class="single single-post postid-145 single-format-standard">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+					<a class="site-logo" href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">
+				<img class="no-grav" src="http://gravatar.com/avatar/de52b8e08282372084fdbcc4c2fe5f38/?s=100&#038;d=identicon" height="100" width="100" alt="Adventures in HttpContext" />
+			</a>
+				<hgroup>
+			<h1 class="site-title"><a href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">Adventures in HttpContext</a></h1>
+			<h2 class="site-description">All the stuff after &quot;Hello, World!&quot;</h2>
+		</hgroup>
+
+		<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<div class="menu-home-container"><ul id="menu-home" class="menu"><li id="menu-item-808" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-808"><a href="http://www.michaelhamrah.com">Home</a></li>
+<li id="menu-item-546" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-546"><a href="http://www.michaelhamrah.com/blog/about/">About</a></li>
+<li id="menu-item-551" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-551"><a href="http://twitter.com/mhamrah">@mhamrah</a></li>
+<li id="menu-item-552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-552"><a href="http://www.flickr.com/photos/hamrah/tags/favorite/">Flickr</a></li>
+<li id="menu-item-809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-809"><a href="http://LinkedIn.com/in/Hamrah">LinkedIn</a></li>
+</ul></div>		</nav><!-- .site-navigation .main-navigation -->
+
+			</header><!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+
+			
+				
+<article id="post-145" class="post-145 post type-post status-publish format-standard hentry category-programming tag-moq tag-tdd tag-unittesting">
+	<header class="entry-header">
+		<h1 class="entry-title">Using Moq to Implement Tests (and Avoid Stubs)</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'adventuresinhttpcontext';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<p>In <a href="http://www.michaelhamrah.com/blog/index.php/2008/12/understand-unit-testing-and-td-getting-better-code-coverage/">my previous post on understanding TDD</a> I discussed how to analyze existing code for creating unit tests.  This was somewhat of &#8220;reverse TDD&#8221;, the idea being to look for what to needs to be tested- the relationship between what one class expects and what another class actually does.  Unfortunately I stopped short of actually implementing those tests- which is the subject of this post.</p>
+
+<p><span id="more-145"></span></p>
+
+<p>As a quick refresher, our demo app has some simple functionality which involves getting an order from a data tier then uses a shipping service to ship the order.  You can<a href="http://www.michaelhamrah.com/blog/wp-content/uploads/2009/02/unittestexamplewithmoq.zip"> download the sample app here</a>.</p>
+
+<h3>Prefer Mocking Over Stubs</h3>
+
+<p>Had I written this post about two months ago, I would have favored creating a suite of stub classes to mimic the expected behavior of our interfaces.  The approach would involve creating various stub classes for our dependent interfaces- the IShippingService and IOrderRepository- and plugging those stubs into the various unit tests.  In the simplest sense these would be hard coded classes to do what I wanted- from throwing exceptions to hard coding return values.  Probably even use some fancy random number generation for ids. However, I&#8217;m learning from a current project that the stub approach isn&#8217;t the best route to take.</p>
+
+<h4>The Problem, Distilled</h4>
+
+<p>Stubbing is definitely easy, but code quickly spirals out of control.  With stub classes, especially those backed by interfaces, more classes are created which then need to be managed and supported.  In an evolving software project this management creates added infrastructure which gets in the way when making changes to the original functionality.  An interface change, for example (either adding a new method or refactoring parameters) causes numerous changes to be made in stubbed out classes.  What&#8217;s worse, there can easily be a divergence in the behavior of the stubbed out class with the behavior it&#8217;s supposed to represent.  True, this can happen with mocking, but as we&#8217;ll see mocking is much more granular and can be tailored to specific circumstances with minimal code duplication.</p>
+
+<p>There&#8217;s simply no need to create extensive, or multiple, stub objects with all those great mocking frameworks around.  Most mocking frameworks offer a ton of features creating granular control of expectations, return values, parameter verification, and method invocation checking.  I strongly recommend reading Martin Fowler&#8217;s <a href="http://martinfowler.com/articles/mocksArentStubs.html">Mocks Aren&#8217;t Stubs</a> article for more information on the difference between mocks and stubs.</p>
+
+<h3>Using Moq to Mimic Behavior</h3>
+
+<p>We&#8217;ll use <a href="http://code.google.com/p/moq/">Moq</a> 3 to demo what you can do with mocking.  Let&#8217;s start off with our first unit test, ShipOrder_Returns_New_Shipment_With_Order_Items.  We simply want to call our ShipOrder function and ensure we get a shipment back with shipment items.  To begin with, we&#8217;ll use <a href="http://code.google.com/p/moq/">Moq</a> to mock our IOrderStorage and IShipmentService so we can construct our OrderShipmentManager.</p>
+
+<p><pre class="syntax c#">
+[TestMethod()]
+public void OrderShipmentManager_ShipOrder_Returns_New_Shipment_With_Shipment_Items()
+{
+var mockOrderStorage = new Mock&lt;IOrderStorage&gt;();
+var mockShipmentService = new Mock&lt;IShipmentService&gt;();</p>
+
+<p>var osm = new OrderShipmentManager(mockOrderStorage.Object, mockShipmentService.Object);</p>
+
+<p>var shipment = osm.ShipOrder(5);</p>
+
+<p>Assert.IsNotNull(shipment, &quot;Returned Shipment was not null&quot;);
+Assert.IsInstanceOfType(shipment, typeof(Shipment), &quot;Returned object was not of type shipment.&quot;);
+Assert.IsNotNull(shipment.ShipmentProducts, &quot;ShipmentProducts were null&quot;);
+Assert.IsTrue(shipment.ShipmentProducts.Count &gt; 0, &quot;ShipmentProducts were empty&quot;);
+}
+</pre></p>
+
+<p>This test will fail because we haven&#8217;t specified any functionality for our interfaces!  But, we didn&#8217;t get a failing test with a null reference exception when calling GetOrder()- we got a failing test because our returned shipment object from GetOrder was null.  Stepping through code you&#8217;ll see that Moq returned void when calling the IOrderStorage.GetOrder method.  Moq creates a simple &#8220;dumb&#8221; proxy class for the interface automatically.  You can specify a strict behavior using MockBehavior.Strict in the constructor to throw an exception for anything that isn&#8217;t explicitly set up.  This can be helpful for ensuring control flow.</p>
+
+<p>The solution to pass our test is to explicitly tell Moq what to do when this method is called, like so:</p>
+
+<p><pre class="syntax c#">
+mockOrderStorage.Setup(os =&gt; os.GetOrder(It.IsAny&lt;int&gt;())).Returns((int id) =&gt; {
+var order = new Order() { OrderId = id };
+return order;
+});
+</pre></p>
+
+<p>When working with Moq you may struggle with the extensive use of Lambda expressions the framework requires.  But after a couple of tests you&#8217;ll become a lambda ninja.  Moq relies on a pair of Setup/Return calls to dictate behavior.  Also notice how we didn&#8217;t have to implement every method in our interfaces- we only had to implement the ones we needed to make the test pass.  That saves a lot of code from being written!</p>
+
+<p>The previous expression states &#8220;when you call GetOrder, with any int value, return a new order with the input id&#8221;.  Moq gives a lot of power in dictating the behavior of the return call based on the expected function.  By specifing (int id) in our return Lambda we can get a reference to our input parameter, which helps us construct a valid Order object based on any input. This is helpful when setting up exceptions.  By using a predicate expression with It.Is instead of It.IsAny, we can have our call throw an exception for an invalid input:</p>
+
+<p><pre class="syntax c#">
+mockShipmentService.Setup(ss =&gt; ss.CreateShipment(It.Is&lt;int&gt;(id =&gt; id &lt; 0))).Throws&lt;ArgumentException&gt;();
+</pre></p>
+
+<p>Setting up exceptions using Moq is instrumental in properly dealing with exception handling in your code.  Also, using It.Is to tailor return methods can help out when dealing with validation or verifying state.  It&#8217;s much faster and easier to use Moq to create behavior than hard coding stub classes.</p>
+
+<p>There&#8217;s one final advantage to using Moq which you can&#8217;t easily do with stubs.  It&#8217;s verifying method invocation.  In our sample project, we have a call to _shipmentService.Ship(shipment).  What does Ship() do? It doesn&#8217;t return anything so checking a return parameter is difficult.  It doesn&#8217;t manipulate the shipment (or, let&#8217;s pretend it doesn&#8217;t).  We want to ensure this function is called.  The solution? Use Moq&#8217;s Verify() method, like so:</p>
+
+<p><pre class="syntax c#">
+mockShipmentService.Verify(svc =&gt; svc.Ship(shipment));
+</pre></p>
+
+<p>This code will throw an exception if Ship wasn&#8217;t called with the shipment variable, ensuring that Ship was actually called if it should.  Using Verify() is helpful when testing out methods returning void- like sending an e-mail, doing a file operation, or ftp.</p>
+
+<h3>Conclusion</h3>
+
+<p>Spending some time getting up to speed with a mocking framework will be instramental in learning TDD.  It&#8217;ll also come in handy with just writing unit tests.  Mocking provides a simple, slimmed down solution that&#8217;s much easier to manage than stub classes.</p>
+
+<p>I like Moq because it&#8217;s quick to express what you want done- but the heavy use of lambdas can be a struggle with getting started.  The <a href="http://code.google.com/p/moq/wiki/QuickStart">moq quickstart</a> is a great guide to the framework and covers all the bases.  The bottom line is don&#8217;t worry about which mocking framework you choose.  They all have their respective advantages.  Pick one, learn it, use it.  If you don&#8217;t like how it does something, switch to something else down the line which does what you want.</p>
+
+<p><a href="http://www.dotnetkicks.com/kick/?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2009%2f02%2fusing-moq-3-to-implement-tests-and-avoid-stubs%2f"><img src="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2009%2f02%2fusing-moq-3-to-implement-tests-and-avoid-stubs%2f&#038;bgcolor=0000FF" border="0" alt="kick it on DotNetKicks.com" /></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-145"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-145"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/?share=facebook" title="Share on Facebook" id="sharing-facebook-145"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-145"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div><div class='yarpp-related'>
+<strong class="related_posts">Related Posts:</strong> <ol>
+<li><a href='http://www.michaelhamrah.com/blog/2008/12/understand-unit-testing-and-td-getting-better-code-coverage/' rel='bookmark' title='Understand Unit Testing and TDD: Getting Better Code Coverage'>Understand Unit Testing and TDD: Getting Better Code Coverage</a></li>
+</ol>
+<img src='http://yarpp.org/pixels/288c3ec03cb337c2e83ff8ec6c6de897'/>
+</div>
+			</div><!-- .entry-content -->
+
+	<footer class="entry-meta">
+		Posted on <a href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/" title="12:00 pm" rel="bookmark"><time class="entry-date" datetime="2009-02-25T12:00:02+00:00" pubdate>February 25, 2009</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.		This entry was posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a> and tagged <a href="http://www.michaelhamrah.com/blog/tag/moq/" rel="tag">moq</a>, <a href="http://www.michaelhamrah.com/blog/tag/tdd/" rel="tag">TDD</a>, <a href="http://www.michaelhamrah.com/blog/tag/unittesting/" rel="tag">UnitTesting</a>. Bookmark the <a href="http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/" title="Permalink to Using Moq to Implement Tests (and Avoid Stubs)" rel="bookmark">permalink</a>.
+			</footer><!-- .entry-meta -->
+</article><!-- #post-145 -->
+
+					<nav role="navigation" id="nav-below" class="site-navigation post-navigation">
+		<h1 class="assistive-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="http://www.michaelhamrah.com/blog/2009/02/how-to-hire-a-software-developer-the-in-house-interview-part-two/" rel="prev"><span class="meta-nav">&larr;</span> How to Hire a Software Developer: The In House Interview (Part Two)</a></div>		<div class="nav-next"><a href="http://www.michaelhamrah.com/blog/2009/02/tips-for-managin-aspnet-mvc-views/" rel="next">Tips for Managing ASP.NET MVC Views <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+				
+<div id="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="post pingback">
+        <p>Pingback: <a href='http://dotnetshoutout.com/Using-Moq-to-Implement-Tests-and-Avoid-Stubs-Adventures-in-HttpContext' rel='external nofollow' class='url'>DotNetShoutout</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://blog.cwa.me.uk/2009/02/26/the-morning-brew-295/' rel='external nofollow' class='url'>Reflective Perspective - Chris Alcock &raquo; The Morning Brew #295</a></p>
+    </li>
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-63">
+        <div id="dsq-comment-header-63" class="dsq-comment-header">
+            <cite id="dsq-cite-63">
+http://wekempf.spaces.live.com                <span id="dsq-author-user-63">wekempf</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-63" class="dsq-comment-body">
+            <div id="dsq-comment-message-63" class="dsq-comment-message"><p>Looks like you read the Martin Fowler article, and failed to understand it.  Your test uses a stub, not a mock.  According to Fowler, the big difference is in what your testing.  With a Stub, your testing state.  With a Mock, your testing behavior.  You didn&#8217;t care if GetOrder was called, you only cared about the result (state) of the call to ShipOrder.  This means you used a stub, regardless of whether or not the Moq uses Mock as the type name here.</p>
+
+<p>You seem to equate stubs with hand coded classes and mocks with runtime generated objects.  This isn&#8217;t accurate, and either can be either hand coded or generated (runtime or compile time).</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-66">
+        <div id="dsq-comment-header-66" class="dsq-comment-header">
+            <cite id="dsq-cite-66">
+http://clariusconsulting.net/kzu                <span id="dsq-author-user-66">Daniel Cazzulino</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-66" class="dsq-comment-body">
+            <div id="dsq-comment-message-66" class="dsq-comment-message"><p>I may add that the following lambda can be shortened significantly:</p>
+
+<p>mockOrderStorage.Setup(os =&gt; os.GetOrder(It.IsAny())).Returns((int id) =&gt; {
+var order = new Order() { OrderId = id };
+return order;
+});</p>
+
+<p>to</p>
+
+<p>mockOrderStorage.Setup(os =&gt; os.GetOrder(It.IsAny())).Returns((int id) =&gt; new Order { OrderId = id });</p>
+
+<p>(no need to do the var neither the return <img src='http://www.michaelhamrah.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> )</p>
+</div>
+        </div>
+
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.dotmaniac.net/mocking-your-dependencies-away/' rel='external nofollow' class='url'>Mocking your dependencies away &laquo; DotManiac.Net &#8211; .Net &amp; SQL-Server</a></p>
+    </li>
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://www.michaelhamrah.com/blog/2009/02/using-moq-3-to-implement-tests-and-avoid-stubs/';
+    var disqus_identifier = '145 http://www.michaelhamrah.com/blog/?p=145';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'adventuresinhttpcontext';
+    var disqus_title = "Using Moq to Implement Tests (and Avoid Stubs)";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+        config.language = '';
+
+        /*
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = '?cf_action=sync_comments&post_id=145';
+
+            var firstScript = document.getElementsByTagName( "script" )[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+                    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+            {
+                'author_name':    "DotNetShoutout",
+                'author_url':    "http:\/\/dotnetshoutout.com\/Using-Moq-to-Implement-Tests-and-Avoid-Stubs-Adventures-in-HttpContext",
+                'date':            "02\/25\/2009 02:16 PM",
+                'excerpt':        "Using Moq to Implement Tests (and Avoid Stubs) | Adventures in HttpContext...<br \/><br \/>Thank you for submitting this cool story - Trackback ...<br \/>",
+                'type':            "trackback"            }
+,            {
+                'author_name':    "Reflective Perspective - Chris Alcock &raquo; The Morning Brew #295",
+                'author_url':    "http:\/\/blog.cwa.me.uk\/2009\/02\/26\/the-morning-brew-295\/",
+                'date':            "02\/26\/2009 02:39 AM",
+                'excerpt':        "[...] Using Moq to Implement Tests (and Avoid Stubs)  - Michael Hamrah talks about the use of the Moq ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Mocking your dependencies away &laquo; DotManiac.Net &#8211; .Net &amp; SQL-Server",
+                'author_url':    "http:\/\/www.dotmaniac.net\/mocking-your-dependencies-away\/",
+                'date':            "05\/05\/2012 07:20 AM",
+                'excerpt':        "[...] more information about how mock objects work and what else you can do with them. Also consult this article ...<br \/>",
+                'type':            "pingback"            }
+        ],
+        'trackback_url': "http:\/\/www.michaelhamrah.com\/blog\/2009\/02\/using-moq-3-to-implement-tests-and-avoid-stubs\/trackback\/"    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.' + 'disqus.com' + '/embed.js?pname=wordpress&pver=2.74';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</script>
+
+			
+			</div><!-- #content .site-content -->
+		</div><!-- #primary .content-area -->
+
+		<div id="secondary" class="widget-area" role="complementary">
+						<aside id="twitter-3" class="widget widget_twitter"><h1 class="widget-title"><a href='http://twitter.com/mhamrah'>Twitter Updates</a></h1><ul class='tweets'>
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> Ja, es ist gut. Es ist gut. 				<a href="http://twitter.com/mhamrah/statuses/312538977448116224" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> I picture you sitting on a log cabin porch smoking a huge pipe, angrily grinning at the horizon, but it&#039;s really a German smile. 				<a href="http://twitter.com/mhamrah/statuses/312537991950249984" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				RT @<a href='http://twitter.com/subchild'>subchild</a>: Digg Blog, We&#039;re Building A Reader: <a href="http://blog.digg.com/post/45355701332/were-building-a-reader#.UUJTagci1Pw.twitter"> blog.digg.com/post/453557013…</a> 				<a href="http://twitter.com/mhamrah/statuses/312338856890466304" class="timesince">15&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			</ul></aside>		</div><!-- #secondary .widget-area -->
+
+	</div><!-- #main .site-main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a> Theme: Publish by <a href="http://kovshenin.com/" rel="designer">Konstantin Kovshenin</a>.		</div><!-- .site-info -->
+	</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		WPCOM_sharing_counts = {"http:\/\/www.michaelhamrah.com\/blog\/2009\/02\/using-moq-3-to-implement-tests-and-avoid-stubs\/":145}	</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.js?ver=20121205'></script>
+		<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=600,height=600' );
+				return false;
+			});
+		});
+		</script>
+		<script type='text/javascript' src='http://platform.twitter.com/widgets.js?ver=20111117'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201311'></script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?ver=2013Maraa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/wpgroho.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/small-menu.js?ver=20120206'></script>
+
+	<script src="http://stats.wordpress.com/e-201311.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.2',blog:'5687098',post:'145',tz:'-4'});
+	var load_cmc = function(){linktracker_init(5687098,145,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.148 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-03-15 10:58:12 -->
+
+<!-- super cache -->

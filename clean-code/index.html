@@ -1,0 +1,176 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> ><! <![endif]-->
+<html>
+<!-- <![endif] -->
+<head>
+<meta charset='utf-8'>
+<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+<title>Clean Code</title>
+<link href='bower_components/reveal.js/css/reveal.min.css' rel='stylesheet'>
+<link href='bower_components/reveal.js/css/theme/sky.css' id='theme' rel='stylesheet'>
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+<div class='reveal'>
+<div class='slides'>
+<section>
+<h1>Clean Code</h1>
+</section>
+<section>
+<p>Time it takes to add one line of code: 10 seconds</p>
+<p>
+<i>(5 if you c+p!)</i>
+</p>
+<p>Time it takes to add one file: 30 seconds?</p>
+<p class='fragment'>Time it takes to understand 500 lines of code?</p>
+<p class='fragment'>Time to understand 500 files?</p>
+</section>
+<section>
+<h1>How to Organize?</h1>
+</section>
+<section>
+<h2>Two Related Concepts:</h2>
+<h3>Clean/Onion Architecture</h3>
+<h3>Error Kernel Pattern</h3>
+</section>
+<section>
+<h3>Execution Context</h3>
+<p>
+Do you understand what is happening?
+</p>
+<p class='fragment'>
+<p>Not a language problem: Ruby, Go, Node, C#. All readable.</p>
+</p>
+<p class='fragment'>
+Does your friend understand what is happening?
+</p>
+</section>
+<section>
+<h2>
+<a href='http://danielwestheide.com/blog/2013/03/20/the-neophytes-guide-to-scala-part-15-dealing-with-failure-in-actor-systems.html'>Error Kernel Pattern</a>
+</h2>
+<p>
+<i>Basically, it is just a simple guideline you should always try to follow, stating that if an actor carries important internal state, then it should delegate dangerous tasks to child actors, so as to prevent the state-carrying actor from crashing.</i>
+</p>
+<p>
+Sometimes new child actors, not a necessity.
+</p>
+<p>
+<i>vars</i> are okay
+</p>
+<p>
+Easily identify smells.
+</p>
+</section>
+<section>
+<h3>
+<a href='http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html'>Clean Architecture</a>
+</h3>
+<img src='http://blog.8thlight.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg'>
+</section>
+<section>
+<h3>
+<a href='http://jeffreypalermo.com/blog/the-onion-architecture-part-1/'>aka Onion Architecture</a>
+</h3>
+<p>
+Control Dependencies
+</p>
+<p>
+Db is not the center of the app
+</p>
+<p>
+Framework is not the center of the app
+</p>
+<p>
+Separate Concerns
+</p>
+</section>
+<section>
+<h3>
+How Easy is it to Replace X?
+</h3>
+<h4>
+The Dependency Rule: Source code dependencies can only point inwards.
+</h4>
+<p>
+The name of something declared in an outer circle must not be mentioned by the code in the an inner circle. That includes, functions, classes. variables, or any other named software entity.
+</p>
+<p>
+<i>
+This is the outcome of the Rmq refactor
+</i>
+</p>
+</section>
+<section>
+<h2>
+<a href='http://www.amazon.com/Lean-Architecture-Agile-Software-Development/dp/0470684208'>Lean Architecture</a>
+</h2>
+<h3>
+<a href='http://en.wikipedia.org/wiki/Data,_context_and_interaction'>DCI: Data, Context, Interaction</a>
+</h3>
+<p>
+Split what a system is (data) from what a system does (interaction)
+</p>
+<p>
+Context is the glue
+</p>
+<p>
+Think of a waiter in a restaurant
+</p>
+</section>
+<section>
+<h1>Scala Paradigms</h1>
+<p>
+Cake Pattern? Self Types? SubCut?
+</p>
+<p class='fragment'>
+All of these are just easier ways of wiring up traits and classes
+</p>
+<p class='fragment'>
+The real question is testability. How easy is it to instantiate X. To test X.
+</p>
+<p class='fragment'>
+TESTING FIRST WILL TELL YOU THIS!
+</p>
+</section>
+<section>
+Conforming to these simple rules is not hard, and will save you a lot of headaches going forward. By separating the software into layers, and conforming to The Dependency Rule, you will create a system that is intrinsically testable, with all the benefits that implies. When any of the external parts of the system become obsolete, like the database, or the web framework, you can replace those obsolete elements with a minimum of fuss.
+</section>
+<div></div>
+<script src='bower_components/reveal.js/lib/js/head.min.js'></script>
+<script src='bower_components/reveal.js/js/reveal.min.js'></script>
+<script>
+  Reveal.initialize({
+      transition: 'linear',
+      backgroundTransition: 'slide',
+      dependencies: [
+          // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+          { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+  
+          // Interpret Markdown in <section> elements
+          { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+  
+          // Syntax highlight for <code> elements
+          { src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+  
+          // Zoom in and out with Alt+click
+          { src: 'bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+  
+          // Speaker notes
+          { src: 'bower_components/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+  
+          // Remote control your reveal.js presentation using a touch device
+          { src: 'bower_components/reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      ]
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

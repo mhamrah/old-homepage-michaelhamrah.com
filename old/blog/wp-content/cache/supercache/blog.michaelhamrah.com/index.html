@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Adventures in HttpContext</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.michaelhamrah.com/blog/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'adventuresinhttpcontext';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Feed" href="http://www.michaelhamrah.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Comments Feed" href="http://www.michaelhamrah.com/blog/comments/feed/" />
+<link rel='stylesheet' id='jetpack-slideshow-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/shortcodes/css/slideshow-shortcode.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<link rel='stylesheet' id='publish-style-css'  href='http://www.michaelhamrah.com/blog/wp-content/themes/publish/style.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='sharedaddy-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.css?ver=2.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-includes/js/jquery/jquery.js?ver=1.8.3'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/jquery.syntax.min.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.4.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.michaelhamrah.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.michaelhamrah.com/blog/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 3.5.1" />
+<link rel='shortlink' href='http://wp.me/nRto' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[122,202] -->
+<meta name="description" content="All the stuff after Hello, World!" />
+<meta name="keywords" content="c#,programming,development,asp.net,.net,silverlight,agile,scrum,tdd,javascript,visualstudio,jquery" />
+<link rel="canonical" href="http://www.michaelhamrah.com/blog/" />
+<!-- /all in one seo pack -->
+	<link rel="stylesheet" href="http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/wp-fixes.css" type="text/css" media="screen" />
+	<script type="text/javascript">
+		jQuery.noConflict(); jQuery(document).ready(function($) { $.syntax({root: 'http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/'}) });
+	</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="blog" />
+<meta property="og:title" content="Adventures in HttpContext" />
+<meta property="og:description" content="All the stuff after &quot;Hello, World!&quot;" />
+<meta property="og:url" content="http://www.michaelhamrah.com/blog/" />
+<meta property="og:site_name" content="Adventures in HttpContext" />
+<style type="text/css">
+.widget_twitter li {
+	word-wrap: break-word;
+}
+</style>
+<!-- Google Analytics Tracking by Google Analyticator 6.4.3: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = ['zip'];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-6576586-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+        
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</head>
+
+<body class="home blog">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+					<a class="site-logo" href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">
+				<img class="no-grav" src="http://gravatar.com/avatar/de52b8e08282372084fdbcc4c2fe5f38/?s=100&#038;d=identicon" height="100" width="100" alt="Adventures in HttpContext" />
+			</a>
+				<hgroup>
+			<h1 class="site-title"><a href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">Adventures in HttpContext</a></h1>
+			<h2 class="site-description">All the stuff after &quot;Hello, World!&quot;</h2>
+		</hgroup>
+
+		<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<div class="menu-home-container"><ul id="menu-home" class="menu"><li id="menu-item-808" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-808"><a href="http://www.michaelhamrah.com">Home</a></li>
+<li id="menu-item-546" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-546"><a href="http://www.michaelhamrah.com/blog/about/">About</a></li>
+<li id="menu-item-551" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-551"><a href="http://twitter.com/mhamrah">@mhamrah</a></li>
+<li id="menu-item-552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-552"><a href="http://www.flickr.com/photos/hamrah/tags/favorite/">Flickr</a></li>
+<li id="menu-item-809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-809"><a href="http://LinkedIn.com/in/Hamrah">LinkedIn</a></li>
+</ul></div>		</nav><!-- .site-navigation .main-navigation -->
+
+			</header><!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+
+			
+								
+					
+<article id="post-785" class="post-785 post type-post status-publish format-standard hentry category-programming tag-architecture tag-http tag-performance tag-scalability tag-web">
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/" title="Permalink to How to Handle a Super Bowl Size Spike in Web Traffic" rel="bookmark">How to Handle a Super Bowl Size Spike in Web Traffic</a></h1>
+	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p>I was shocked to learn the number of <a href="http://www.yottaa.com/blog/bid/265815/Coke-SodaStream-the-13-Websites-That-Crashed-During-Super-Bowl-2013">sites which failed to handle the spike in web traffic during the Super Bowl</a>.  Most of these sites served static content and should have scaled easily with the use of CDNs.  Scaling sites, even dynamic ones, are achievable with well known tools and techniques.</p>
+
+<p><a href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/" class="more-link">Read More<span class="meta-nav">&rarr;</span></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-785"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-785"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/?share=facebook" title="Share on Facebook" id="sharing-facebook-785"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-785"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div>			</div><!-- .entry-content -->
+	
+	<footer class="entry-meta">
+					Posted on <a href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/" title="2:14 am" rel="bookmark"><time class="entry-date" datetime="2013-02-06T02:14:22+00:00" pubdate>February 6, 2013</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.			<span class="cat-links">
+				Posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a>			</span>
+			
+						<span class="sep"> | </span>
+			<span class="tags-links">
+				Tagged <a href="http://www.michaelhamrah.com/blog/tag/architecture/" rel="tag">architecture</a>, <a href="http://www.michaelhamrah.com/blog/tag/http/" rel="tag">Http</a>, <a href="http://www.michaelhamrah.com/blog/tag/performance/" rel="tag">performance</a>, <a href="http://www.michaelhamrah.com/blog/tag/scalability/" rel="tag">scalability</a>, <a href="http://www.michaelhamrah.com/blog/tag/web/" rel="tag">web</a>			</span>
+					
+				<span class="sep"> | </span>
+		<span class="comments-link"><a href="http://www.michaelhamrah.com/blog/2013/02/how-to-handle-a-super-bowl-size-spike-in-web-traffic/#comments" title="Comment on How to Handle a Super Bowl Size Spike in Web Traffic"><span class="dsq-postid" rel="785 http://www.michaelhamrah.com/blog/?p=785">1 Comment</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+</article><!-- #post-785 -->
+
+				
+					
+<article id="post-739" class="post-739 post type-post status-publish format-standard hentry category-everythingelse category-programming tag-development tag-tdd tag-testing">
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/" title="Permalink to Embracing Test Driven Development for Speed" rel="bookmark">Embracing Test Driven Development for Speed</a></h1>
+	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p>A few months ago I helped a developer looking to better embrace test driven development.  The session was worthwhile and made me reflect on my journey with TDD.</p>
+
+<p>Writing tests is one thing.  Striving for full test coverage, writing tests first and leveraging integration and unit tests is another.  Some people find writing tests cumbersome and slow.  Others may ignore tests for difficult scenarios or code spikes.  When first working with tests I felt the same way.  Over time I worked through issues and my feeling towards TDD changed.  The pain was gone and I worked more effectively.</p>
+
+<p>TDD is about speed.  Speed of development and speed of maintenance.  Once you leverage TDD as a way to better produce code you&#8217;ve unlocked the promise of TDD: Code more, debug less.</p>
+
+<p><a href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/" class="more-link">Read More<span class="meta-nav">&rarr;</span></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-739"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-739"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/?share=facebook" title="Share on Facebook" id="sharing-facebook-739"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-739"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div>			</div><!-- .entry-content -->
+	
+	<footer class="entry-meta">
+					Posted on <a href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/" title="2:28 am" rel="bookmark"><time class="entry-date" datetime="2013-02-04T02:28:28+00:00" pubdate>February 4, 2013</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.			<span class="cat-links">
+				Posted in <a href="http://www.michaelhamrah.com/blog/category/everythingelse/" title="View all posts in Everything Else" rel="category tag">Everything Else</a>, <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a>			</span>
+			
+						<span class="sep"> | </span>
+			<span class="tags-links">
+				Tagged <a href="http://www.michaelhamrah.com/blog/tag/development/" rel="tag">development</a>, <a href="http://www.michaelhamrah.com/blog/tag/tdd/" rel="tag">TDD</a>, <a href="http://www.michaelhamrah.com/blog/tag/testing/" rel="tag">Testing</a>			</span>
+					
+				<span class="sep"> | </span>
+		<span class="comments-link"><a href="http://www.michaelhamrah.com/blog/2013/02/embracing-test-driven-development-for-speed/#respond" title="Comment on Embracing Test Driven Development for Speed"><span class="dsq-postid" rel="739 http://www.michaelhamrah.com/blog/?p=739">Leave a comment</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+</article><!-- #post-739 -->
+
+				
+					
+<article id="post-742" class="post-742 post type-post status-publish format-standard hentry category-everythingelse tag-travel tag-turkey">
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/" title="Permalink to Bus travel tips in Turkey" rel="bookmark">Bus travel tips in Turkey</a></h1>
+	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p><a href="http://www.michaelhamrah.com/blog/wp-content/uploads/2012/09/20120913-205957.jpg"><img src="http://www.michaelhamrah.com/blog/wp-content/uploads/2012/09/20120913-205957.jpg" alt="20120913-205957.jpg" class="alignnone size-full" /></a><br /><br /> <a href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/" class="more-link">Read More<span class="meta-nav">&rarr;</span></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-742"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-742"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/?share=facebook" title="Share on Facebook" id="sharing-facebook-742"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-742"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div>			</div><!-- .entry-content -->
+	
+	<footer class="entry-meta">
+					Posted on <a href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/" title="1:47 pm" rel="bookmark"><time class="entry-date" datetime="2012-09-13T13:47:25+00:00" pubdate>September 13, 2012</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.			<span class="cat-links">
+				Posted in <a href="http://www.michaelhamrah.com/blog/category/everythingelse/" title="View all posts in Everything Else" rel="category tag">Everything Else</a>			</span>
+			
+						<span class="sep"> | </span>
+			<span class="tags-links">
+				Tagged <a href="http://www.michaelhamrah.com/blog/tag/travel/" rel="tag">travel</a>, <a href="http://www.michaelhamrah.com/blog/tag/turkey/" rel="tag">Turkey</a>			</span>
+					
+				<span class="sep"> | </span>
+		<span class="comments-link"><a href="http://www.michaelhamrah.com/blog/2012/09/bus-travel-tips-in-turkey/#respond" title="Comment on Bus travel tips in Turkey"><span class="dsq-postid" rel="742 http://www.michaelhamrah.com/blog/?p=742">Leave a comment</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+</article><!-- #post-742 -->
+
+				
+					
+<article id="post-718" class="post-718 post type-post status-publish format-standard hentry category-programming tag-architecture tag-cache tag-caching tag-performance tag-scaling">
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/" title="Permalink to Effective Caching Strategies: Understanding HTTP, Fragment and Object Caching" rel="bookmark">Effective Caching Strategies: Understanding HTTP, Fragment and Object Caching</a></h1>
+	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p>Caching is one of the most effective techniques to speed up a website and has become a staple of modern web architecture.  Effective caching strategies will allow you to get the most out of your website, ease pressure on your database and offer a better experience for users.  Yet as the old <a href="http://martinfowler.com/bliki/TwoHardThings.html">adage says</a> caching&#8211;especially invalidation&#8211;is tricky.  How to deal with dynamic pages, deciding what to cache, per-user personalization and invalidation are some of the challenges which come along with caching.</p>
+
+<p><a href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/" class="more-link">Read More<span class="meta-nav">&rarr;</span></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-718"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-718"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/?share=facebook" title="Share on Facebook" id="sharing-facebook-718"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-718"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div>			</div><!-- .entry-content -->
+	
+	<footer class="entry-meta">
+					Posted on <a href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/" title="2:41 pm" rel="bookmark"><time class="entry-date" datetime="2012-08-18T14:41:24+00:00" pubdate>August 18, 2012</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.			<span class="cat-links">
+				Posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a>			</span>
+			
+						<span class="sep"> | </span>
+			<span class="tags-links">
+				Tagged <a href="http://www.michaelhamrah.com/blog/tag/architecture/" rel="tag">architecture</a>, <a href="http://www.michaelhamrah.com/blog/tag/cache/" rel="tag">cache</a>, <a href="http://www.michaelhamrah.com/blog/tag/caching/" rel="tag">caching</a>, <a href="http://www.michaelhamrah.com/blog/tag/performance/" rel="tag">performance</a>, <a href="http://www.michaelhamrah.com/blog/tag/scaling/" rel="tag">scaling</a>			</span>
+					
+				<span class="sep"> | </span>
+		<span class="comments-link"><a href="http://www.michaelhamrah.com/blog/2012/08/effective-caching-strategies-understanding-http-fragment-and-object-caching/#respond" title="Comment on Effective Caching Strategies: Understanding HTTP, Fragment and Object Caching"><span class="dsq-postid" rel="718 http://www.michaelhamrah.com/blog/?p=718">Leave a comment</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+</article><!-- #post-718 -->
+
+				
+					
+<article id="post-696" class="post-696 post type-post status-publish format-standard hentry category-programming">
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/" title="Permalink to Web Services @ Getty Images" rel="bookmark">Web Services @ Getty Images</a></h1>
+	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p>I wrote a post for the Getty Images Technology blog on how we use SOA at Getty Images.  As systems become more and more complex with unique scalability needs, SOA allows systems to segment complexity and create useful boundaries.</p>
+
+<p><a href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/" class="more-link">Read More<span class="meta-nav">&rarr;</span></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-696"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-696"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/?share=facebook" title="Share on Facebook" id="sharing-facebook-696"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-696"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div>			</div><!-- .entry-content -->
+	
+	<footer class="entry-meta">
+					Posted on <a href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/" title="5:25 pm" rel="bookmark"><time class="entry-date" datetime="2012-02-21T17:25:49+00:00" pubdate>February 21, 2012</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.			<span class="cat-links">
+				Posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a>			</span>
+			
+					
+				<span class="sep"> | </span>
+		<span class="comments-link"><a href="http://www.michaelhamrah.com/blog/2012/02/web-services-getty-images/#respond" title="Comment on Web Services @ Getty Images"><span class="dsq-postid" rel="696 http://www.michaelhamrah.com/blog/?p=696">Leave a comment</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+</article><!-- #post-696 -->
+
+				
+					<nav role="navigation" id="nav-below" class="site-navigation paging-navigation">
+		<h1 class="assistive-text">Post navigation</h1>
+
+	
+				<div class="nav-previous"><a href="http://www.michaelhamrah.com/blog/page/2/" ><span class="meta-nav">&larr;</span> Older posts</a></div>
+		
+		
+	
+	</nav><!-- #nav-below -->
+	
+			
+			</div><!-- #content .site-content -->
+		</div><!-- #primary .content-area -->
+
+		<div id="secondary" class="widget-area" role="complementary">
+						<aside id="twitter-3" class="widget widget_twitter"><h1 class="widget-title"><a href='http://twitter.com/mhamrah'>Twitter Updates</a></h1><ul class='tweets'>
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> Ja, es ist gut. Es ist gut. 				<a href="http://twitter.com/mhamrah/statuses/312538977448116224" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> I picture you sitting on a log cabin porch smoking a huge pipe, angrily grinning at the horizon, but it&#039;s really a German smile. 				<a href="http://twitter.com/mhamrah/statuses/312537991950249984" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				RT @<a href='http://twitter.com/subchild'>subchild</a>: Digg Blog, We&#039;re Building A Reader: <a href="http://blog.digg.com/post/45355701332/were-building-a-reader#.UUJTagci1Pw.twitter"> blog.digg.com/post/453557013…</a> 				<a href="http://twitter.com/mhamrah/statuses/312338856890466304" class="timesince">15&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			</ul></aside>		</div><!-- #secondary .widget-area -->
+
+	</div><!-- #main .site-main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a> Theme: Publish by <a href="http://kovshenin.com/" rel="designer">Konstantin Kovshenin</a>.		</div><!-- .site-info -->
+	</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		WPCOM_sharing_counts = {"http:\/\/www.michaelhamrah.com\/blog\/2013\/02\/how-to-handle-a-super-bowl-size-spike-in-web-traffic\/":785,"http:\/\/www.michaelhamrah.com\/blog\/2013\/02\/embracing-test-driven-development-for-speed\/":739,"http:\/\/www.michaelhamrah.com\/blog\/2012\/09\/bus-travel-tips-in-turkey\/":742,"http:\/\/www.michaelhamrah.com\/blog\/2012\/08\/effective-caching-strategies-understanding-http-fragment-and-object-caching\/":718,"http:\/\/www.michaelhamrah.com\/blog\/2012\/02\/web-services-getty-images\/":696}	</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.js?ver=20121205'></script>
+		<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=600,height=600' );
+				return false;
+			});
+		});
+		</script>
+		<script type='text/javascript' src='http://platform.twitter.com/widgets.js?ver=20111117'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/shortcodes/js/jquery.cycle.js?ver=2.9999.8'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var jetpackSlideshowSettings = {"spinner":"http:\/\/www.michaelhamrah.com\/blog\/wp-content\/plugins\/jetpack\/modules\/shortcodes\/img\/slideshow-loader.gif"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/shortcodes/js/slideshow-shortcode.js?ver=20121214.1'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201311'></script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?ver=2013Maraa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/wpgroho.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/small-menu.js?ver=20120206'></script>
+
+	<script src="http://stats.wordpress.com/e-201311.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.2',blog:'5687098',post:'0',tz:'-4'});
+	var load_cmc = function(){linktracker_init(5687098,0,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.629 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-03-15 10:42:04 -->
+
+<!-- super cache -->

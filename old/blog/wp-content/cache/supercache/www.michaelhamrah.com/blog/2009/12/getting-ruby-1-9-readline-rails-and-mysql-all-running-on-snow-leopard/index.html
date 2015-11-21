@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow LeopardAdventures in HttpContext | Adventures in HttpContext</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.michaelhamrah.com/blog/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Feed" href="http://www.michaelhamrah.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Comments Feed" href="http://www.michaelhamrah.com/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow Leopard Comments Feed" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/feed/" />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<link rel='stylesheet' id='publish-style-css'  href='http://www.michaelhamrah.com/blog/wp-content/themes/publish/style.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='sharedaddy-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.css?ver=2.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-includes/js/jquery/jquery.js?ver=1.8.3'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/jquery.syntax.min.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.4.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.michaelhamrah.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.michaelhamrah.com/blog/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Organizing Javascript for Event Pooling with jQuery' href='http://www.michaelhamrah.com/blog/2009/12/organizing-javascript-for-event-pooling-with-jquery/' />
+<link rel='next' title='Rocking the Rackspace Cloud' href='http://www.michaelhamrah.com/blog/2010/01/rocking-the-rackspace-cloud/' />
+<meta name="generator" content="WordPress 3.5.1" />
+<link rel='shortlink' href='http://wp.me/pnRto-4Z' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[122,235] -->
+<meta name="description" content="In my never ending love/hate relationship with Ruby, Rails and my Mac I've finally gotten Ruby 1.9 up and running with Rails 2.3 and MySql 64 bit. All on Snow" />
+<link rel="canonical" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/" />
+<!-- /all in one seo pack -->
+	<link rel="stylesheet" href="http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/wp-fixes.css" type="text/css" media="screen" />
+	<script type="text/javascript">
+		jQuery.noConflict(); jQuery(document).ready(function($) { $.syntax({root: 'http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/'}) });
+	</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow Leopard" />
+<meta property="og:url" content="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/" />
+<meta property="og:description" content="In my never ending love/hate relationship with Ruby, Rails and my Mac I&#039;ve finally gotten Ruby 1.9 up and running with Rails 2.3 and MySql 64 bit.  All on Snow Leopard.  There was an even a little ..." />
+<meta property="og:site_name" content="Adventures in HttpContext" />
+<style type="text/css">
+.widget_twitter li {
+	word-wrap: break-word;
+}
+</style>
+<!-- Google Analytics Tracking by Google Analyticator 6.4.3: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = ['zip'];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-6576586-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+        
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</head>
+
+<body class="single single-post postid-309 single-format-standard">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+					<a class="site-logo" href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">
+				<img class="no-grav" src="http://gravatar.com/avatar/de52b8e08282372084fdbcc4c2fe5f38/?s=100&#038;d=identicon" height="100" width="100" alt="Adventures in HttpContext" />
+			</a>
+				<hgroup>
+			<h1 class="site-title"><a href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">Adventures in HttpContext</a></h1>
+			<h2 class="site-description">All the stuff after &quot;Hello, World!&quot;</h2>
+		</hgroup>
+
+		<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<div class="menu-home-container"><ul id="menu-home" class="menu"><li id="menu-item-808" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-808"><a href="http://www.michaelhamrah.com">Home</a></li>
+<li id="menu-item-546" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-546"><a href="http://www.michaelhamrah.com/blog/about/">About</a></li>
+<li id="menu-item-551" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-551"><a href="http://twitter.com/mhamrah">@mhamrah</a></li>
+<li id="menu-item-552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-552"><a href="http://www.flickr.com/photos/hamrah/tags/favorite/">Flickr</a></li>
+<li id="menu-item-809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-809"><a href="http://LinkedIn.com/in/Hamrah">LinkedIn</a></li>
+</ul></div>		</nav><!-- .site-navigation .main-navigation -->
+
+			</header><!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+
+			
+				
+<article id="post-309" class="post-309 post type-post status-publish format-standard hentry category-programming tag-rails tag-ruby tag-snow-leopard">
+	<header class="entry-header">
+		<h1 class="entry-title">Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow Leopard</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'adventuresinhttpcontext';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<p>In my never ending love/hate relationship with Ruby, Rails and my Mac I&#8217;ve finally gotten Ruby 1.9 up and running with Rails 2.3 and MySql 64 bit.  All on Snow Leopard.  There was an even a little detour with Readline.  If you&#8217;ve scoured other posts about Snow Leopard, Ruby, Rails and Mysql and ended up here I feel your pain.  I hope this helps you on your way. <a href="http://wonko.com/post/how-to-compile-ruby-191">Most of this info</a> is from other places which I&#8217;ve explained in a little (just a little) but more depth.<span id="more-309"></span></p>
+
+<h3>Install XCode</h3>
+
+<p>You need XCode to do any of this, so install it.  If you&#8217;re upgrading to Snow Leopard, reinstall XCode so you get the correct c compiler.</p>
+
+<h3>Your profile</h3>
+
+<p>Here&#8217;s the deal.  We&#8217;re going to install ruby 1.9 to your /usr/local directory.  It will dump stuff in /usr/local/bin and other stuff in /usr/local/lib.  Why here?  That&#8217;s where it goes.  The default install of ruby on Snow Leopard 1.8, lives in /System/Library/Frameworks/Ruby.framework/Versions/Current.  Current is really an alias (actually, symlink) to the 1.8 directory at the same level.  For some it may seem like a good idea to install ruby 1.9 here.  It&#8217;s not.  Just put in /usr/local like everyone else.</p>
+
+<p>Because ruby 1.9 will live in our /usr/local you have to help out your terminal a little.  You have to tell it where to look for the bin of ruby 1.9.  So when you run &#8220;ruby&#8221; from terminal you get the 1.9 version in /usr/local, not the 1.8 version in the System Library.  That&#8217;s why you have to add a path to /usr/local in your profile.  Do this from the terminal:</p>
+
+<p>[code lang="bash"]
+mate ~/.bash_profile
+[/code]</p>
+
+<p>This says, &#8220;open or create the file .bash_profile, in the home directory (~/), using textmate&#8221;.  You can use any other editor if you know how- but if you did you probably wouldn&#8217;t need to read this.  So just buy- and use- textmate.  It&#8217;s a nice app.  Now, .bash_profile is a file used by bash, aka the terminal app, for settings.  Some places you&#8217;ll see &#8220;mate .profile&#8221; instead. <a href="http://hayne.net/MacDev/Notes/unixFAQ.html"> This will work too</a>- but if you have a .profile and .bash_profile you may run in to problems.  Just have one, preferably .bash_profile, and write this in it:</p>
+
+<p>[code lang="bash"]
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:$PATH
+[/code]</p>
+
+<p>This appends our /usr/local/bin and sbin to the current list of directories to search for when trying to find out where all those little commands live which you type into the terminal.  Keen eyes may have noticed the mysql/bin thrown in there.  This is for later.  The :$PATH at the end is extremely important- it includes other paths which are included in other places. Once this is done then type &#8220;source .bash_profile&#8221; from terminal to load the changes.</p>
+
+<h3>Try Installing Ruby</h3>
+
+<p>One way to install ruby is by using <a href="http://www.macports.org/">MacPorts</a>.  If you want to get a little more hands on, we&#8217;re going to pull the source down and build it ourselves.  MacPorts is probably the easiest option.  We&#8217;re not doing the easy option.</p>
+
+<p>Note: Read all this first!  In the terminal, make sure you&#8217;re in your home directory by doing a simple &#8220;cd&#8221;.  Then, do this:</p>
+
+<p>[code lang="bash"]
+mkdir src
+cd src
+[/code]</p>
+
+<p>We&#8217;re creating a new directory called src for our source files, and moving into said directory.  Now we can get the code:</p>
+
+<p>[code language="lang=&#039;bash"]
+curl -O ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.1-p376.tar.gz
+tar xzvf ruby-1.9.1-p376.tar.gz
+cd ruby-1.9.1-p376/
+[/code]</p>
+
+<p>Curl is a nice little app to pull things from the internet.  The -O option simply names the local file the same as the remote file.  Ruby 1.9.1-p376 was the latest version as of this writing, but <a href="http://www.ruby-lang.org/en/">you should check the ruby site </a>for the latest release.  Tar xzvf simply unpacks the compressed download.</p>
+
+<p><strong>Very helpful hint: </strong><em>If you ever are unsure about a command, simply type the command and &#8211;help.  As in, curl &#8211;help.  This is very helpful.</em></p>
+
+<p>Next, we get to the good stuff.  First, run autoconf simply by typing &#8220;autoconf&#8221;:</p>
+
+<p>[code lang="bash"]autoconf[/code]</p>
+
+<p><a href="http://www.gnu.org/software/autoconf/">Autoconf</a> is a tool used for generating configuration scripts.  It&#8217;s important you run this.  Then, run the configuration script.  The thing which worked for me was:</p>
+
+<p>[code lang="bash"]
+./configure --prefix=/usr/local/ --enable-shared --with-readline-dir=/usr/local
+[/code]</p>
+
+<p>This tells us to install ruby in the /usr/local directory, build a shared library for ruby, and use the readline installation found in /usr/local. <strong>Very Important: </strong>some users prefer adding a suffix to the ruby 1.9 install so it doesn&#8217;t interfere with the system install of ruby.  By adding the &#8211;program-suffix=19 option to configure you&#8217;ll append &#8220;19&#8243; to all commands, like &#8220;ruby19&#8243; and &#8220;gem19&#8243;.  This is a smart idea as it won&#8217;t interfere with the default ruby installation.  Using this technique there are ways to easily switch between ruby installations.  If you don&#8217;t care about 1.8, and just want the ease of typing &#8220;ruby&#8221; and getting the latest 1.9, omit the &#8211;program-suffix option.</p>
+
+<p>If you run ./configure and get an error of:</p>
+
+<p><em>configure: WARNING: unrecognized options: &#8211;with-readline-dir</em></p>
+
+<p>You did not run autoconf.  Type it and run it, then run configure again.</p>
+
+<p>Sometimes you&#8217;ll see the &#8211;enable-pthread option.  There seems to be some debate on whether this is a good idea.  I say omit it unless you know what you&#8217;re doing.  You can google for more info.  Feel free to explore and google other configure options- simply type &#8220;configure &#8211;help&#8221; to list them all.</p>
+
+<p>Next we need to run:</p>
+
+<p>[code lang="bash"]make[/code]</p>
+
+<p>This builds all the source files needed for the install.  If you run this and get an error of:</p>
+
+<p>readline.c: In function â€˜username_completion_proc_callâ€™:
+readline.c:1159: error: â€˜username_completion_functionâ€™ undeclared (first use in this function)</p>
+
+<p>You don&#8217;t have readline- or at least the proper version of readline- installed.  This is a problem.  Let&#8217;s get it.</p>
+
+<h3>Readline</h3>
+
+<p>[code lang="bash"]
+cd ~/src
+curl -O ftp://ftp.gnu.org/gnu/readline/readline-6.0.tar.gz
+tar xzvf readline-6.0.tar.gz
+cd readline-6.0
+./configure --prefix=/usr/local
+make
+sudo make install
+[/code]</p>
+
+<p>You&#8217;ve now installed readline.  You may get a warning of <em>install: you may need to run ldconfig at </em>at the end<em>.</em> Don&#8217;t worry about it.  At least I didn&#8217;t have to worry about it.</p>
+
+<h3>Do everything again</h3>
+
+<p>By now, you know the drill.  Hop back to the ruby source code directory and try it again.  But if you ran make in the ruby install step and got errors, just run &#8220;make clean&#8221; to reset everything.  It&#8217;s a good idea.</p>
+
+<p>[code lang="bash"]
+make clean
+autoconf
+./configure --prefix=/usr/local/ --with-readline-dir=/usr/local --enable-shared
+make
+sudo make install
+[/code]</p>
+
+<p>That should be it.  Hopefully you&#8217;re error free.  Typing:</p>
+
+<p>[code lang="bash"]which ruby[/code]</p>
+
+<p>should return:</p>
+
+<p><em>/usr/local/bin/ruby</em></p>
+
+<p>and typing &#8220;ruby -v&#8221; should return the version of ruby you&#8217;ve just downloaded.  Unless you used the &#8211;program-suffix option above, then it&#8217;s probably &#8220;ruby19 -v&#8221;</p>
+
+<h3><strong>R</strong><strong>ails</strong></h3>
+
+<p>Now you can download and install rails.  Simply run:</p>
+
+<p>[code lang="bash"]
+sudo gem update --system
+sudo gem install rails
+[/code]</p>
+
+<h3>Mysql</h3>
+
+<p>Mysql is a piece of cake.  Simply grab the x86_64 <a href="http://dev.mysql.com/downloads/mysql/5.1.html#macosx-dmg">install package from the Mysql site.</a> Even though it&#8217;s for 10.5, it works fine on 10.6 (Snow Leopard).  Once this is done, you can build the mysql gem:</p>
+
+<p>[code lang="bash"]
+sudo env ARCHFLAGS=&quot;-arch x86_64&quot; gem install mysql -- --with-mysql-config=/usr/local/mysql/bin/mysql_config
+[/code]</p>
+
+<h3>Fin</h3>
+
+<p>Now, try to get everything running.  Go back to your home directory, create a rails app, and see if it works:</p>
+
+<p>[code lang="bash"]
+cd ~/
+rails playground --databse=mysql
+cd playground
+rake db:create
+script/server
+[/code]</p>
+
+<p>Go to http://localhost:3000, check your environment settings, and you should see:</p>
+
+<table style="height: 164px;" width="256">
+<tbody>
+<tr>
+<td>Ruby version</td>
+<td>1.9.1 (i386-darwin10.2.0)</td>
+</tr>
+<tr>
+<td>RubyGems version</td>
+<td>1.3.5</td>
+</tr>
+<tr>
+<td>Rack version</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Rails version</td>
+<td>2.3.5</td>
+</tr>
+<tr>
+<td>Active Record version</td>
+<td>2.3.5</td>
+</tr>
+<tr>
+<td>Active Resource version</td>
+<td>2.3.5</td>
+</tr>
+<tr>
+<td>Action Mailer version</td>
+<td>2.3.5</td>
+</tr>
+<tr>
+<td>Active Support version</td>
+<td>2.3.5</td>
+</tr>
+</tbody>
+</table>
+
+<p>And voila, you&#8217;re done!</p>
+
+<p>UPDATE:</p>
+
+<p>If you use Textmate to develop with Rails, your Textmate Ruby path will point to the system&#8217;s 1.8 version, so you&#8217;ll get awakard issues of Gems not being available or other weird stuff when trying to run Ruby within Textmate (like when you want to RSpec tests).  This fix is simple: go to Textmate -&gt; Preferences -&gt; Advanced -&gt; Shell Variables and add TM_RUBY with a value of /usr/local/bin/ruby and you&#8217;ll be good to go.</p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-309"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-309"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/?share=facebook" title="Share on Facebook" id="sharing-facebook-309"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-309"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div><div class='yarpp-related'>
+<strong class="related_posts">Related Posts:</strong> <ol>
+<li><a href='http://www.michaelhamrah.com/blog/2009/02/how-i-got-started-learning-ruby-on-rails/' rel='bookmark' title='How I Got Started Learning Ruby on Rails'>How I Got Started Learning Ruby on Rails</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2009/02/digging-into-ruby-on-rails-from-c-and-mvc-aspnet-mvc/' rel='bookmark' title='Digging into Ruby on Rails from C# and .MVC (Asp.Net MVC)'>Digging into Ruby on Rails from C# and .MVC (Asp.Net MVC)</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2009/05/authlogic-and-openid-on-rails/' rel='bookmark' title='Authlogic and OpenID on Rails'>Authlogic and OpenID on Rails</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2009/05/great-site-for-the-ruby-on-rails-api/' rel='bookmark' title='Great Site for the Ruby on Rails API'>Great Site for the Ruby on Rails API</a></li>
+<li><a href='http://www.michaelhamrah.com/blog/2010/11/rails-fixing-bundle-no-metadata-found-issues/' rel='bookmark' title='Rails: Fixing Bundle &#8220;No Metadata Found&#8221; issues'>Rails: Fixing Bundle &#8220;No Metadata Found&#8221; issues</a></li>
+</ol>
+<img src='http://yarpp.org/pixels/288c3ec03cb337c2e83ff8ec6c6de897'/>
+</div>
+			</div><!-- .entry-content -->
+
+	<footer class="entry-meta">
+		Posted on <a href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/" title="1:10 am" rel="bookmark"><time class="entry-date" datetime="2009-12-27T01:10:01+00:00" pubdate>December 27, 2009</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.		This entry was posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a> and tagged <a href="http://www.michaelhamrah.com/blog/tag/rails/" rel="tag">rails</a>, <a href="http://www.michaelhamrah.com/blog/tag/ruby/" rel="tag">ruby</a>, <a href="http://www.michaelhamrah.com/blog/tag/snow-leopard/" rel="tag">snow leopard</a>. Bookmark the <a href="http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/" title="Permalink to Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow Leopard" rel="bookmark">permalink</a>.
+			</footer><!-- .entry-meta -->
+</article><!-- #post-309 -->
+
+					<nav role="navigation" id="nav-below" class="site-navigation post-navigation">
+		<h1 class="assistive-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="http://www.michaelhamrah.com/blog/2009/12/organizing-javascript-for-event-pooling-with-jquery/" rel="prev"><span class="meta-nav">&larr;</span> Organizing Javascript for Event Pooling with jQuery</a></div>		<div class="nav-next"><a href="http://www.michaelhamrah.com/blog/2010/01/rocking-the-rackspace-cloud/" rel="next">Rocking the Rackspace Cloud <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+				
+<div id="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="post pingback">
+        <p>Pingback: <a href='http://macruby.cn/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow/' rel='external nofollow' class='url'>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Ruby</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://macapple.com.cn/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow/' rel='external nofollow' class='url'>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Apple</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://rubycocoa.com.cn/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow/' rel='external nofollow' class='url'>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; RubyCocoa</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://www.drakz.com/online/mysql/?p=153' rel='external nofollow' class='url'>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; | Drakz Free Online Service</a></p>
+    </li>
+    </li>
+    <li class="post pingback">
+        <p>Pingback: <a href='http://macruby.reviewsir.com/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow/' rel='external nofollow' class='url'>Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Ruby</a></p>
+    </li>
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-308">
+        <div id="dsq-comment-header-308" class="dsq-comment-header">
+            <cite id="dsq-cite-308">
+http://airbladesoftware.com                <span id="dsq-author-user-308">Andy Stewart</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-308" class="dsq-comment-body">
+            <div id="dsq-comment-message-308" class="dsq-comment-message"><p>Thank you!  The <code>autoconf</code> step and <code>--with-readline-dir=/usr/local</code> flag got my installation working at last.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-309">
+        <div id="dsq-comment-header-309" class="dsq-comment-header">
+            <cite id="dsq-cite-309">
+http://themacnurse.com                <span id="dsq-author-user-309">Andrey Mac</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-309" class="dsq-comment-body">
+            <div id="dsq-comment-message-309" class="dsq-comment-message"><p>hi&#8230;
+ That really helfull post 
+It&#8217;s work on my computer</p>
+
+<p>Thanks</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-312">
+        <div id="dsq-comment-header-312" class="dsq-comment-header">
+            <cite id="dsq-cite-312">
+                <span id="dsq-author-user-312">Yixi Zhang</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-312" class="dsq-comment-body">
+            <div id="dsq-comment-message-312" class="dsq-comment-message"><p>Thank you for the help, but cant fix the &#8211;with-readline-dir unrecognized problem, even typed &#8216;autoconf&#8217; for million times.
+&#8216;which autoconf&#8217; tells me its binary is in /opt/local/bin and probably installed by MacPorts. 
+Should I fetch the autoconf manually and install it at /usr/bin or /usr/local/bin again? Since MacPorts has caused so many troubles in my life.</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-315">
+        <div id="dsq-comment-header-315" class="dsq-comment-header">
+            <cite id="dsq-cite-315">
+                <span id="dsq-author-user-315">BR</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-315" class="dsq-comment-body">
+            <div id="dsq-comment-message-315" class="dsq-comment-message"><p>Thanks!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-357">
+        <div id="dsq-comment-header-357" class="dsq-comment-header">
+            <cite id="dsq-cite-357">
+                <span id="dsq-author-user-357">Scott</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-357" class="dsq-comment-body">
+            <div id="dsq-comment-message-357" class="dsq-comment-message"><p>Thanks for this tutorial.  Helped me get ruby/rails/mysql and everything done without rvm.  I&#8217;m not a terminal master so I&#8217;m glad this exists.</p>
+</div>
+        </div>
+
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://www.michaelhamrah.com/blog/2009/12/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard/';
+    var disqus_identifier = '309 http://www.michaelhamrah.com/blog/?p=309';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'adventuresinhttpcontext';
+    var disqus_title = "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow Leopard";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+        config.language = '';
+
+        /*
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = '?cf_action=sync_comments&post_id=309';
+
+            var firstScript = document.getElementsByTagName( "script" )[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+                    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+            {
+                'author_name':    "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Ruby",
+                'author_url':    "http:\/\/macruby.cn\/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow\/",
+                'date':            "12\/27\/2009 02:27 AM",
+                'excerpt':        "[...] posted here: Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230;      ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Apple",
+                'author_url':    "http:\/\/macapple.com.cn\/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow\/",
+                'date':            "12\/27\/2009 02:44 AM",
+                'excerpt':        "[...] original here: Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230;      ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; RubyCocoa",
+                'author_url':    "http:\/\/rubycocoa.com.cn\/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow\/",
+                'date':            "12\/27\/2009 05:09 AM",
+                'excerpt':        "[...]  [...]<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; | Drakz Free Online Service",
+                'author_url':    "http:\/\/www.drakz.com\/online\/mysql\/?p=153",
+                'date':            "01\/13\/2010 02:38 PM",
+                'excerpt':        "[...] original post here: Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230;   Share and ...<br \/>",
+                'type':            "pingback"            }
+,            {
+                'author_name':    "Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230; Mac Ruby",
+                'author_url':    "http:\/\/macruby.reviewsir.com\/getting-ruby-19-readline-rails-and-mysql-all-running-on-snow\/",
+                'date':            "01\/16\/2010 11:01 PM",
+                'excerpt':        "[...] original post here:  Getting Ruby 1.9, Readline, Rails, and Mysql all running on Snow &#8230;     ...<br \/>",
+                'type':            "pingback"            }
+        ],
+        'trackback_url': "http:\/\/www.michaelhamrah.com\/blog\/2009\/12\/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard\/trackback\/"    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.' + 'disqus.com' + '/embed.js?pname=wordpress&pver=2.74';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</script>
+
+			
+			</div><!-- #content .site-content -->
+		</div><!-- #primary .content-area -->
+
+		<div id="secondary" class="widget-area" role="complementary">
+						<aside id="twitter-3" class="widget widget_twitter"><h1 class="widget-title"><a href='http://twitter.com/mhamrah'>Twitter Updates</a></h1><ul class='tweets'>
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> Ja, es ist gut. Es ist gut. 				<a href="http://twitter.com/mhamrah/statuses/312538977448116224" class="timesince">1&nbsp;hour&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> I picture you sitting on a log cabin porch smoking a huge pipe, angrily grinning at the horizon, but it&#039;s really a German smile. 				<a href="http://twitter.com/mhamrah/statuses/312537991950249984" class="timesince">1&nbsp;hour&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				RT @<a href='http://twitter.com/subchild'>subchild</a>: Digg Blog, We&#039;re Building A Reader: <a href="http://blog.digg.com/post/45355701332/were-building-a-reader#.UUJTagci1Pw.twitter"> blog.digg.com/post/453557013…</a> 				<a href="http://twitter.com/mhamrah/statuses/312338856890466304" class="timesince">14&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			</ul></aside>		</div><!-- #secondary .widget-area -->
+
+	</div><!-- #main .site-main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a> Theme: Publish by <a href="http://kovshenin.com/" rel="designer">Konstantin Kovshenin</a>.		</div><!-- .site-info -->
+	</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		WPCOM_sharing_counts = {"http:\/\/www.michaelhamrah.com\/blog\/2009\/12\/getting-ruby-1-9-readline-rails-and-mysql-all-running-on-snow-leopard\/":309}	</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.js?ver=20121205'></script>
+		<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=600,height=600' );
+				return false;
+			});
+		});
+		</script>
+		<script type='text/javascript' src='http://platform.twitter.com/widgets.js?ver=20111117'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201311'></script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?ver=2013Maraa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/wpgroho.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/small-menu.js?ver=20120206'></script>
+
+	<script src="http://stats.wordpress.com/e-201311.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.2',blog:'5687098',post:'309',tz:'-4'});
+	var load_cmc = function(){linktracker_init(5687098,309,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.158 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-03-15 09:54:14 -->
+
+<!-- super cache -->

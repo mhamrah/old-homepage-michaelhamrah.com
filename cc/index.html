@@ -1,0 +1,220 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> ><! <![endif]-->
+<html>
+  <!-- <![endif] -->
+  <head>
+    <meta charset='utf-8'>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <title>Clean Code</title>
+    <link href='bower_components/reveal.js/css/reveal.min.css' rel='stylesheet'>
+    <link href='bower_components/reveal.js/css/theme/sky.css' id='theme' rel='stylesheet'>
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
+    <div class='reveal'>
+      <div class='slides'>
+        <section>
+          <h1>Clean Code</h1>
+          <h3>Growing Healthy Systems</h3>
+          <p>
+            <a href='michaelhamrah.com'>Michael Hamrah</a>
+            /
+            <a href='twitter.com/mhamrah'>@mhamrah</a>
+          </p>
+        </section>
+        <section>
+          <img src='img/tweet.png'>
+        </section>
+        <section>
+          <table>
+            <tr>
+              <td>Time it takes to add one line of code:</td>
+              <td>
+                10 seconds
+              </td>
+            </tr>
+            <tr>
+              <td>Time it takes to add one file:</td>
+              <td>30 seconds?</td>
+            </tr>
+            <tr class='fragment'>
+              <td>Time it takes to understand 500 lines of code?</td>
+            </tr>
+            <tr class='fragment'>
+              <td>Time to understand 500 files?</td>
+            </tr>
+          </table>
+        </section>
+        <section>
+          <h3>What to Do?</h3>
+          <h4>Clean/Onion Architecture</h4>
+          <h4>Data, Context and Interaction</h4>
+          <h4>Evolving code through tests</h4>
+        </section>
+        <section>
+          <h3>But First, Execution Context</h3>
+          <p>
+            Do you understand what is happening?
+          </p>
+          <p class='fragment'>
+            <p>Not a language problem: Ruby, Go, Js, Scala. All readable.</p>
+          </p>
+          <p class='fragment'>
+            Does your friend understand what is happening?
+          </p>
+          <p class='fragment'>
+            Would a stranger understand what is happening?
+          </p>
+        </section>
+        <section>
+          <h3>
+            <a href='http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html'>Clean Architecture</a>
+          </h3>
+          <img src='http://blog.8thlight.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg'>
+        </section>
+        <section>
+          <h3>
+            <a href='http://jeffreypalermo.com/blog/the-onion-architecture-part-1/'>aka Onion Architecture</a>
+          </h3>
+          <p>
+            Control Dependencies
+          </p>
+          <p>
+            Db is not the center of the app
+          </p>
+          <p>
+            Framework is not the center of the app
+          </p>
+          <p>
+            Separate Concerns
+          </p>
+          <p>
+            Focus on important code
+          </p>
+        </section>
+        <section>
+          <img src='http://blog.8thlight.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg'>
+          <p>
+            <u>
+              <a href='http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html'>Clean Architecture</a>
+            </u>
+            /
+            <u>
+              <a href='http://jeffreypalermo.com/blog/the-onion-architecture-part-1/'>Onion Architecture</a>
+            </u>
+          </p>
+        </section>
+        <section>
+          <h3>
+            How Easy is it to Replace X?
+          </h3>
+          <h4>
+            The Dependency Rule:
+          </h4>
+          <h4>Source code dependencies can only point inwards.</h4>
+          <p style='text-align: left'>
+            The name of something declared in an outer circle must not be mentioned by the code in the an inner circle. That includes, functions, classes, variables or any other named software entity.
+          </p>
+        </section>
+        <section>
+          <h2>
+            Lean Architecture
+            <small>
+              <a href='http://www.amazon.com/Lean-Architecture-Agile-Software-Development/dp/0470684208'>(Amazon)</a>
+            </small>
+          </h2>
+          <h3>
+            DCI: Data, Context, Interaction
+            <small>
+              <a href='http://en.wikipedia.org/wiki/Data,_context_and_interaction'>(Wikipedia)</a>
+            </small>
+          </h3>
+          <p>
+            Split what a system is (data) from what a system does (interaction)
+          </p>
+          <p>
+            Context is the glue
+          </p>
+          <p>
+            Think of a waiter in a restaurant
+          </p>
+        </section>
+        <section>
+          <h3>If a test never failed, <br /> does it ever really pass?</h3>
+          <h5>
+            <i>It's about the why and the how</i>
+          </h5>
+          <p>Are you forcing a puzzle piece?</p>
+        </section>
+        <section>
+          <h3>
+            Test First: <br />
+            Evolve your code
+          </h3>
+          <p>
+            What do you need to happen?
+          </p>
+          <p>
+            How easy is it to make it happen?
+          </p>
+          <p>
+            Tell a story
+          </p>
+          <p>
+            Look for smells!
+          </p>
+          <p>
+            Refactor!
+          </p>
+        </section>
+        <section>
+          <h2>In Summary</h2>
+          <p>
+            Conforming to these simple rules is not hard, and will save you a lot of headaches going forward. By separating the software into layers, and conforming to The Dependency Rule, you will create a system that is intrinsically testable, with all the benefits that implies. When any of the external parts of the system become obsolete, like the database, or the web framework, you can replace those obsolete elements with a minimum of fuss.
+          </p>
+        </section>
+        <section>
+          <h2>Name Things!</h2>
+          <p>FileTransfer vs PutOnDas</p>
+          <p>FileDownloader vs DownloadToTas</p>
+        </section>
+        <div></div>
+        <script src='bower_components/reveal.js/lib/js/head.min.js'></script>
+        <script src='bower_components/reveal.js/js/reveal.min.js'></script>
+        <script>
+          Reveal.initialize({
+            history: true,
+            center: true,
+              transition: 'linear',
+              backgroundTransition: 'slide',
+              dependencies: [
+                  // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+                  { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          
+                  // Interpret Markdown in <section> elements
+                  { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                  { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          
+                  // Syntax highlight for <code> elements
+                  { src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          
+                  // Zoom in and out with Alt+click
+                  { src: 'bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          
+                  // Speaker notes
+                  { src: 'bower_components/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+          
+                  // Remote control your reveal.js presentation using a touch device
+                  //{ src: 'bower_components/reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+              ]
+            });
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

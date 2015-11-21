@@ -1,0 +1,21 @@
+.side-by-side {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
+  box-sizing: border-box; }
+  .side-by-side .side {
+    -webkit-flex: 1 0 0;
+    -moz-flex: 1 0 0;
+    flex: 1 0 0; }
+  .side-by-side .side.fix-w3c {
+    display: flex; }
+  .side-by-side .side + .side {
+    margin-left: 2rem; }
+
+#recap .side-by-side {
+  margin-bottom: 2rem; }
+  #recap .side-by-side img {
+    max-width: auto;
+    max-height: auto; }
+
+.reveal section img { margin: 0px; }

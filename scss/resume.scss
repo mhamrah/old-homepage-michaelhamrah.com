@@ -1,0 +1,105 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Lora);
+
+$print-font-family: 'Lora', serif;
+
+body div, body h1 {
+  width: 960px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 5em;
+}
+ul, li {
+  display: block;
+  margin: auto;
+}
+h2 {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #000000; 
+}
+h3, h4 {
+  margin: 0px 5px 0 0;
+  line-height: 1.2em;
+}
+h3 {
+  margin-top: 12px;
+}
+h4 {
+  margin-bottom: 2px;
+}
+h4 em {
+  font-size: .9em;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+
+#trip {
+  font-style: italic;
+  font-size: .9em;
+}
+
+em {
+}
+
+span.notice {
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  font-size: .8em;
+  display: block;
+  margin-bottom: 5px;
+  margin-top: -2px;
+}
+
+ul, li {
+  font-family: 'Open Sans', sans-serif; 
+  em {
+    font-size: .8em;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  body div, body h1 {
+    width: auto;
+    text-align: justify;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+}
+
+@media print {
+  p, ul, li, span.notice {
+    font-family: $print-font-family;
+  }
+
+  body {
+    font-family: $print-font-family;
+    margin-top: 0px;
+  }
+  #contact {
+    margin: 0px;
+    width: auto;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+  dt,dd  {
+  }
+  body h1 {
+    margin-bottom: 50px;
+  }
+  @page 
+  {
+    size: auto;
+    margin: 25mm 25mm 25mm 25mm;
+  }
+  #getty {
+    page-break-before:always;
+  }
+  a { text-decoration: none; }
+}

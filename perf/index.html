@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Things to Know About Performance</title>
+    <meta content="A talk I gave to the General Assembly's Apprentice Program on Performance" name="description">
+    <meta content="Michael Hamrah" name="author">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <link href="css/reveal.min.css" rel="stylesheet">
+    <link href="css/theme/default.css" id="theme" rel="stylesheet">
+    <!-- For syntax highlighting -->
+    <link href="lib/css/zenburn.css" rel="stylesheet">
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+    <!--[if lt IE 9]>
+      <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="reveal">
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h1>Performance!</h1>
+          <p>
+            <a href="http://www.michaelhamrah.com">Michael Hamrah</a>
+            <span>/</span>
+            <a href="http://twitter.com/mhamrah">@mhamrah</a>
+          </p>
+          <p>
+            Software Engineer @ Getty Images
+          </p>
+        </section>
+        <section>
+          <h1>Performance</h1>
+          <h4>vs.</h4>
+          <h1>Scalability</h1>
+          <h4>vs.</h4>
+          <h1>Reliability</h1>
+        </section>
+        <section>
+          <h1>Talking Points</h1>
+          <ul>
+            <li>Networking and TCP</li>
+            <li>Web Servers</li>
+            <li>App Servers</li>
+            <li>Rails</li>
+            <li>Caching</li>
+            <li>Databases</li>
+            <li>Front End Code</li>
+            <li>Iaas (Amazon) vs PaaS (Heroku)</li>
+            <li>Example Architectures</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Why is this Important?</h1>
+          <div class="fragment">
+            <p>Converstion Rates</p>
+            <p>Attention Span, Frustration Levels</p>
+            <p>Trust</p>
+            <p>
+              <a href="http://www.webperformancetoday.com/2012/10/11/37-lessons-web-performance/">Web Performance Lessons</a>
+              and
+              <a href="http://www.yottaa.com/blog/bid/265815/Coke-SodaStream-the-13-Websites-That-Crashed-During-Super-Bowl-2013">Superbowl Website Failures</a>
+            </p>
+          </div>
+        </section>
+        <section>
+          <h1>It's not all about your code!</h1>
+          <p>Time spent in your code?</p>
+          <p>Overall percentage?</p>
+        </section>
+        <section>
+          <h1>Networking!</h1>
+          <h3>It's Mostly All About Networking</h3>
+          <p>
+            What happens when you type an address in your browser?
+          </p>
+          <p class="fragment">
+            The TCP/IP Stack: Data Link, Network, Transport, Application (also Physical, Session, Presentation)
+          </p>
+          <p class="fragment">
+            This is called the OSI model.
+          </p>
+        </section>
+        <section>
+          <h1>TCP: How data flows from A to B</h1>
+          <ul>
+            <li>A node sends "packets"</li>
+            <li>Packets must be of a certain size (~1500 bytes, 64k max)</li>
+            <li>Only a certain amount of packets are allowed "in flight"</li>
+            <li>Packets are guaranteed delivery, in-order (different than UDP)</li>
+            <li>Starts with a Three-Way handshake. Syn -> Syn Ack -> Ack</li>
+          </ul>
+        </section>
+        <section>
+          <h1>How long does this take?</h1>
+          <ul class="fragment">
+            <li>NYC to SFC: ~2530mi, RTT in vacuum: 27ms, RTT in fiber: 41.04ms</li>
+            <li>IP and Routes add delay.  (Check out Ping and Traceroute)</li>
+            <li>Remember the three way handshake? Latency.</li>
+            <li>Bandwidth may not matter</li>
+            <li>Connections are scarce, precious resources! (Why we have connection pooling)</li>
+          </ul>
+        </section>
+        <section>
+          <h1>How does HTTP fit in?</h1>
+          <ul>
+            <li>Application level protocol</li>
+            <li>Defines how requests and responses sit on top of TCP</li>
+            <li>Http 1.1: Keep-alive, pipelining</li>
+            <li>Browsers 6-8 connections per server</li>
+            <li>Think of 1mb of data split 1, 10, 100 ways</li>
+          </ul>
+        </section>
+        <section>
+          <p>
+            Most client-server optimization is about tuning for network latency and managing TCP connections.
+          </p>
+          <p>
+            Networking isn't just about a browser and a server.  Intra- and inter- data center connections are important!
+          </p>
+          <p>
+            Optimize for throughput:  keep data small, reduce latency, reduce connections.
+          </p>
+        </section>
+        <section>
+          <h1>Web Servers!</h1>
+          <p>
+            Web servers like nginx and apache handle http requests.
+          </p>
+          <p class="fragment">
+            Application servers run programs which produce dynamic content. Think Thin, Unicorn, Puma, Node, etc.
+          </p>
+          <p class="fragment">
+            Sometimes it's a blurry line.  Depends on architecture.
+          </p>
+        </section>
+        <section>
+          <h1>Threaded vs. Evented</h1>
+          <p>
+            How connections are mapped to requests
+          </p>
+          <p>
+            How threads are mapped to requests
+          </p>
+          <p>
+            Memory usage and context switching
+          </p>
+          <p>
+            How does your OS help?
+          </p>
+        </section>
+        <section>
+          <h1>All about Async</h1>
+          <p>
+            Non-blocking io is essential in all cases
+          </p>
+          <p>
+            EventMachine, Node, Twisted: Event loops
+          </p>
+          <p>
+            Heroku's big problem with Rails
+          </p>
+        </section>
+        <section>
+          <h1>A Typical Scenario</h1>
+          <h3>Load Balancer -> WebServer -> App Server</h3>
+          <ul>
+            <li>Load Balancer Distributes Requests</li>
+            <li>Web Servers (nginx/haproxy/varnish) handles connections, static content</li>
+            <li>Application Servers or Process Pools respond to requests</li>
+          </ul>
+        </section>
+        <section>
+          <h1>So what do web servers actually do?</h1>
+          <ul>
+            <li>Very good at handling http connections</li>
+            <li>Parse http requests</li>
+            <li>Add filters like gzip, authentication</li>
+            <li>Buffering, Caching</li>
+            <li>Reverse-Proxy support</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Differences with Application Servers (and Runtimes!)</h1>
+          <ul>
+            <li>Allow you to program dynamic content</li>
+            <li>Thin, Unicorn, Puma, Passenger</li>
+            <li>MRI, Rubinus, JRuby</li>
+            <li>Node vs. Rails vs. Django vs. Whatever?</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Rack</h1>
+          <ul>
+            <li>A common interface between Ruby web servers and web frameworks.</li>
+            <li>Provides simple http primitives</li>
+            <li>Supports middleware</li>
+            <li>Can mix Rails and Sinatra endpoints</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Databases!</h1>
+          <p>
+            They're beasts!
+          </p>
+          <p>
+            Sql - ACID
+          </p>
+          <p>
+            NoSql - BASE
+          </p>
+          <p class="fragment">
+            Both have their own set of problems.
+          </p>
+        </section>
+        <section>
+          <h1>Tuning Databases</h1>
+          <ul>
+            <li>In both cases, it's about indexes.</li>
+            <li>Learn to find slow queries.</li>
+            <li>Avoid n+1 queries (go for eager loading).</li>
+            <li>Optimize for read/write patterns.</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Scaling Databases</h1>
+          <ul>
+            <li>How do you add more nodes?</li>
+            <li>Again, understand read/write patterns.</li>
+            <li>Understand latency.</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Polygot Data Landscape</h1>
+          <ul>
+            <li>Postgres, Mysql</li>
+            <li>Cassandra, Riak, HBase</li>
+            <li>MongoDb</li>
+            <li>Redis</li>
+            <li>Memcache</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Caching!</h1>
+          <ul>
+            <li>Html Caching</li>
+            <li>Fragment Caching</li>
+            <li>Object Caching</li>
+          </ul>
+          <p class="fragment">
+            How easy is it to expire your cache?
+          </p>
+        </section>
+        <section>
+          <h1>Html caching</h1>
+          <ul>
+            <li>Uses http headers</li>
+            <li>ETags, Cache-Control, Expires</li>
+            <li>Anonymous vs. Authenticated Users</li>
+            <li>How are you expiring cache?</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Fragment Caching</h1>
+          <ul>
+            <li>Still Html!</li>
+            <li>More surgical</li>
+            <li>ESI make tools like Varnish quite powerful</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Object Caching</h1>
+          <ul>
+            <li>Most common</li>
+            <li>Most flexible</li>
+            <li>Easy db integration</li>
+            <li>Memcache for reads</li>
+            <li>Redis for structured data</li>
+            <li>Compress (CPU cycles are there)</li>
+          </ul>
+          <p>
+            You're just denormalizing data
+          </p>
+        </section>
+        <section>
+          <h1>Queues!</h1>
+          <h3>They'll be your best friend.</h3>
+          <ul>
+            <li>Very Async</li>
+            <li>Great for handling spikes</li>
+            <li>Offload low-priority requests</li>
+            <li>Great for elastic workers</li>
+            <li>Resque, IronWorker, Amazon SQS</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Client-side techniques</h1>
+          <ul>
+            <li>Sprites</li>
+            <li>Minification</li>
+            <li>Domain Sharding</li>
+            <li>cache-control</li>
+            <li>Async javascript</li>
+            <li>Image management (WebP)</li>
+            <li>CDNs!</li>
+          </ul>
+        </section>
+        <section>
+          <h1>PaaS vs. IaaS</h1>
+          <ul>
+            <li>How do you want to run your apps?</li>
+            <li>What control do you want or need?</li>
+            <li>Other AWS Services: ElasticCache, R53/ELB, ASG, Search, CloudFormation, OpWorks, Multi-AZ, Multi-Region</li>
+            <li>Cloud Services: Most tech is offered as SaaS</li>
+            <li>NewRelic, Loggly</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Google's SPDY</h1>
+          <ul>
+            <li>One persistent SSL connection</li>
+            <li>True Duplex, no waiting</li>
+            <li>Better window scaling</li>
+            <li>Compressed headers (cookies, etc)</li>
+            <li>Content Prioritization</li>
+            <li>Server Push</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Examples</h1>
+          <ul>
+            <li>How would you design a news site?</li>
+            <li>How would you design an e-commerce site?</li>
+            <li>How would you design a social site?</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Problem</h1>
+          <p>
+            The server request/response time is very long.
+          </p>
+        </section>
+        <section>
+          <h1>Problem</h1>
+          <p>
+            The server request/response time is very fast, but when more load increases, times increase dramatically.
+          </p>
+        </section>
+        <section>
+          <h1>Problem</h1>
+          <p>
+            A page takes a long time to load, but the server time is very fast.
+          </p>
+        </section>
+        <section>
+          <h1>Problem</h1>
+          <p>
+            We are sending images to a bunch of customers.  Sending images is very slow, but nothing is maxed out.
+          </p>
+          <p>
+            The problem increases when we try and send more images.
+          </p>
+        </section>
+      </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+    <script>
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+      	controls: true,
+      	progress: true,
+      	history: true,
+      	center: true,
+      
+      	theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      	transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+      
+      	// Optional libraries used to extend on reveal.js
+      	dependencies: [
+      		{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      		{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      		{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      		{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      		{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      		{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+      	]
+      });
+      var _gaq=[["_setAccount","UA-6576586-1"],["_trackPageview"]];(function(e,a){var c=e.createElement(a),b=e.getElementsByTagName(a)[0];c.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";b.parentNode.insertBefore(c,b)}(document,"script"));
+    </script>
+  </body>
+</html>

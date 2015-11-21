@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Saving dynamically added list items using jQuery and ASP.NET MVCAdventures in HttpContext | Adventures in HttpContext</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.michaelhamrah.com/blog/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Feed" href="http://www.michaelhamrah.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Comments Feed" href="http://www.michaelhamrah.com/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adventures in HttpContext &raquo; Saving dynamically added list items using jQuery and ASP.NET MVC Comments Feed" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/feed/" />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<link rel='stylesheet' id='publish-style-css'  href='http://www.michaelhamrah.com/blog/wp-content/themes/publish/style.css?ver=3.5.1' type='text/css' media='all' />
+<link rel='stylesheet' id='sharedaddy-css'  href='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.css?ver=2.2' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-includes/js/jquery/jquery.js?ver=1.8.3'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/jquery.syntax.min.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.4.3'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.michaelhamrah.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.michaelhamrah.com/blog/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Hiring Software Developers: The In House Interview (Open Ended Questions)' href='http://www.michaelhamrah.com/blog/2008/12/hiring-software-developers-the-in-house-interview-open-ended-questions/' />
+<link rel='next' title='Understand Unit Testing and TDD: Getting Better Code Coverage' href='http://www.michaelhamrah.com/blog/2008/12/understand-unit-testing-and-td-getting-better-code-coverage/' />
+<meta name="generator" content="WordPress 3.5.1" />
+<link rel='shortlink' href='http://wp.me/pnRto-1z' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[122,227] -->
+<meta name="description" content="There are going to be times when you want to allow a user to enter multiple copies of a single form on a web page. This frequently happens when adding items" />
+<link rel="canonical" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/" />
+<!-- /all in one seo pack -->
+	<link rel="stylesheet" href="http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/wp-fixes.css" type="text/css" media="screen" />
+	<script type="text/javascript">
+		jQuery.noConflict(); jQuery(document).ready(function($) { $.syntax({root: 'http://www.michaelhamrah.com/blog/wp-content/plugins/jquery-syntax/jquery-syntax/'}) });
+	</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Saving dynamically added list items using jQuery and ASP.NET MVC" />
+<meta property="og:url" content="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/" />
+<meta property="og:description" content="There are going to be times when you want to allow a user to enter multiple copies of a single form on a web page.  This frequently happens when adding items to a list- like products in a shopping ..." />
+<meta property="og:site_name" content="Adventures in HttpContext" />
+<meta property="og:image" content="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fsaving-dynamically-added-list-items-using-jquery-and-aspnet-mvc%2f&amp;bgcolor=0000CC" />
+<style type="text/css">
+.widget_twitter li {
+	word-wrap: break-word;
+}
+</style>
+<!-- Google Analytics Tracking by Google Analyticator 6.4.3: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = ['zip'];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-6576586-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+        
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</head>
+
+<body class="single single-post postid-97 single-format-standard">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+					<a class="site-logo" href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">
+				<img class="no-grav" src="http://gravatar.com/avatar/de52b8e08282372084fdbcc4c2fe5f38/?s=100&#038;d=identicon" height="100" width="100" alt="Adventures in HttpContext" />
+			</a>
+				<hgroup>
+			<h1 class="site-title"><a href="http://www.michaelhamrah.com/blog/" title="Adventures in HttpContext" rel="home">Adventures in HttpContext</a></h1>
+			<h2 class="site-description">All the stuff after &quot;Hello, World!&quot;</h2>
+		</hgroup>
+
+		<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<div class="menu-home-container"><ul id="menu-home" class="menu"><li id="menu-item-808" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-808"><a href="http://www.michaelhamrah.com">Home</a></li>
+<li id="menu-item-546" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-546"><a href="http://www.michaelhamrah.com/blog/about/">About</a></li>
+<li id="menu-item-551" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-551"><a href="http://twitter.com/mhamrah">@mhamrah</a></li>
+<li id="menu-item-552" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-552"><a href="http://www.flickr.com/photos/hamrah/tags/favorite/">Flickr</a></li>
+<li id="menu-item-809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-809"><a href="http://LinkedIn.com/in/Hamrah">LinkedIn</a></li>
+</ul></div>		</nav><!-- .site-navigation .main-navigation -->
+
+			</header><!-- #masthead .site-header -->
+
+	<div id="main" class="site-main">
+		<div id="primary" class="content-area">
+			<div id="content" class="site-content" role="main">
+
+			
+				
+<article id="post-97" class="post-97 post type-post status-publish format-standard hentry category-programming tag-aspnetmvc tag-jquery">
+	<header class="entry-header">
+		<h1 class="entry-title">Saving dynamically added list items using jQuery and ASP.NET MVC</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'adventuresinhttpcontext';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<p>There are going to be times when you want to allow a user to enter multiple copies of a single form on a web page.  This frequently happens when adding items to a list- like products in a shopping cart or tasks in a task list.  You want the user to add as many &#8220;items&#8221; as they want to the list, then save the entire list at once.</p>
+
+<p><span id="more-97"></span></p>
+
+<p>Dynamically adding elements to a page is easy with jQuery, but parsing out list items on the server can be difficult- especially when you don&#8217;t know how many items are on the page!   Things get even trickier when the number of input controls for each item increases- you have to keep all these input controls in sync so each item gets saved correctly.  Luckily, ASP.NET MVC has <a href="http://haacked.com/archive/2008/10/23/model-binding-to-a-list.aspx" target="_blank">a built in feature to pull out a list of complex types posted to a page</a> and automatically put them in a model.  We&#8217;re going to combine this feature with jQuery to dynamically add form elements on a page which end up in a list of complex types that can be accessed in a controller action.</p>
+
+<p>In our example,  a user will be creating a shopping list and will  have the ability to add items to the shopping list dynamically.  When the user hits &#8220;Save&#8221; the entire list with all items will be posted to the server and serialized into a ShoppingList model.</p>
+
+<p>We&#8217;re going to use:
+<pre class="syntax html">
+&lt;ul&gt;
+    &lt;li&gt;jQuery to dynamically drive the client side and dynamically add list items&lt;/li&gt;
+    &lt;li&gt;ASP.NET MVC as our web infrastructure&lt;/li&gt;
+    &lt;li&gt;The DefaultModelBinder to build a list of complex types which can be passed to an action method.&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+Our model is simple- we have a ShoppingList with properties of Name and ShoppingItems:</p>
+
+<p><pre class="syntax c#"></p>
+
+<p>public class ShoppingList
+{
+public string ListName { get; set; }
+public IList&lt;ShoppingItem&gt; Items { get; set; }
+}</p>
+
+<p>public class ShoppingItem
+{
+public string Name { get; set; }
+public int Quantity { get; set; }
+}</p>
+
+<p></pre></p>
+
+<p><strong>Posting Multiple Items At Once</strong></p>
+
+<p>The key to this feature is posting multiple related elements which end up in a list.  In order for the DefaultModelBinder to build a list, we have to post elements in a certain way.  Essentially, each set of related input elements are grouped together using a uniquer key.  The key can be any string- it doesn&#8217;t have to be an integer index.</p>
+
+<p>Keys are specified with a hidden input element.  In our sample, we want our list to end up in the myList.Items property.  So for every object in the Items list, we need a hidden input field with a name of &#8220;myList.Items.Index&#8221;.  The key we specify for the element will be the key we use in the name attribute the input element.  If our key is &#8220;foo&#8221;, and our property is &#8220;Quantity&#8221;, we&#8217;ll have:</p>
+
+<p><pre class="syntax html"></p>
+
+<p>&lt;input type=&quot;hidden&quot; name=&quot;myList.Items.Index&quot; value=&quot;foo&quot; /&gt;</p>
+
+<p>&lt;input type=&quot;hidden&quot; name=&quot;myList.Items[foo].Quantity&quot; value=&quot;5&quot; /&gt;</p>
+
+<p>[/pre]</p>
+
+<p>Even though we couldn't do that in c#, we can do it in our markup.&Acirc;&nbsp; Think of keys for a hashtable- the key can be anything you want.&Acirc;&nbsp; The hashtable is a list of the complex type your building, so typing hashtable[&quot;myKey'] returns the complex type, and you have access to all properties of that type.</p>
+
+<p>I've created a unit test which shows off this magic for multiple items:</p>
+
+<p>&lt;pre class=&quot;syntax c#&quot;&gt;</p>
+
+<p>shoppingController.Request.Form.Add(&quot;myList.ListName&quot;, &quot;My Shopping List&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items.Index&quot;, &quot;1&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items[1].Name&quot;, &quot;Chocolate&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items[1].Quantity&quot;, &quot;5&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items.Index&quot;, &quot;Alpha&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items[Alpha].Name&quot;, &quot;Graham Crackers&quot;);
+shoppingController.Request.Form.Add(&quot;myList.Items[Alpha].Quantity&quot;, &quot;10&quot;);</p>
+
+<p></pre></p>
+
+<p>Notice how we&#8217;re passing multiple &#8220;myList.Items.Index&#8221; values.  Don&#8217;t worry- they won&#8217;t overwrite eachother.  Servers turn multiple name values into a comma delimited list (you&#8217;ll end up with: &#8220;1,Alpha&#8221; has your values for &#8220;myList.Items.Index&#8221;.  All the DefaultModelBinder is doing is parsing the list of  keys for whatever array you want, then matching those values to the form package. My naming convention of myList.Items is simply allowing the myList parameter in the controller action to be populated correctly by the DefaultModelBinder.</p>
+
+<p>To reiterate, the indexer I use for each array object is simply grouping related html elements together- Graham Crackers has a quantity of 10 because I&#8217;m using the same indexer for each name: Items[Alpha].Name and Items[Alpha].Quantity, just like a hashtable.</p>
+
+<p>The rest of the unit test shows how the DefaultModelBinder will build the ShoppingList Item&#8217;s property using these form values:</p>
+
+<p><pre class="syntax c#"></p>
+
+<p>var defaultBinding = ModelBinders.GetBinder(typeof(ShoppingList));
+var bindingContext = new ModelBindingContext(shoppingController.ControllerContext,
+shoppingController.ValueProvider,
+typeof(ShoppingList),
+&quot;myList&quot;, null, shoppingController.ModelState, null);
+var binderResult = defaultBinding.BindModel(bindingContext);</p>
+
+<p>Assert.IsNotNull(binderResult);
+Assert.IsNotNull(binderResult.Value);
+Assert.IsInstanceOfType(binderResult.Value, typeof(ShoppingList));</p>
+
+<p>var myList = binderResult.Value as ShoppingList;</p>
+
+<p>Assert.IsTrue(myList.ListName == &quot;My Shopping List&quot;);
+Assert.IsTrue(myList.Items.Count &gt; 0);
+Assert.IsTrue(myList.Items[0].Name == &quot;Chocolate&quot;);
+Assert.IsTrue(myList.Items[0].Quantity == 5);</p>
+
+<p>Assert.IsTrue(myList.Items[1].Name == &quot;Graham Crackers&quot;);
+Assert.IsTrue(myList.Items[1].Quantity == 10);</p>
+
+<p></pre></p>
+
+<p><strong>The View</strong></p>
+
+<p>I want a button to &#8220;add another item&#8221; to the shopping list.  If the user clicks this button, two new textboxes should appear: one for name, and another for quantity.  These need to have the same indexer.  When the page first loads, there should already be an item to enter.</p>
+
+<p>I have a couple of choices to build this logic.  I could specify one set of input elements in the view, and use jQuery to add individual elements to the DOM when the user hits the button.  I don&#8217;t like this idea because it means I have two places to build the list items: one in the view, the other in jQuery.  When you build the same code in multiple places, you&#8217;re going to get discrepancies, which lead to bugs-  I guarantee it. I could use jQuery to add the default form when the page loads, but I don&#8217;t like this- html is easy and simply, it allows me to see what I&#8217;m doing.  It&#8217;s much easier to write html than write javascript to build html.</p>
+
+<p>Instead, I&#8217;m going for a partial view approach using actions.  By putting the injected section of markup into its own UserControl with a controller action I can embed the markup in the parent view and use ajax to get the rendered html snippet to the client via a url.  I can also choose how to generate the indexer in the action method&#8217;s body: I&#8217;m going to use Guids.  With Guids, I won&#8217;t have to track any other indexers- I&#8217;m guaranteed a unique value I can use for all the related elements in the partial view.  Here&#8217;s the markup:</p>
+
+<p>The parent view, which the user sees on load:</p>
+
+<p><pre class="syntax html"></p>
+
+<p>&lt;form runat=&quot;server&quot; method=&quot;post&quot; action=&quot;/Shopping/Save&quot;&gt;
+&lt;fieldset&gt;
+&lt;label&gt;Shopping List Name:&lt;/label&gt;
+&lt;input type=&quot;text&quot; id=&quot;ListName&quot; name=&quot;myList.ListName&quot; /&gt;
+&lt;div id=&quot;itemContainer&quot;&gt;
+&lt;% Html.RenderAction&lt;ShoppingController&gt;(a =&gt; a.ShoppingItemFormContent(&quot;myList.Items&quot;)); %&gt;</p>
+
+<p>&lt;/div&gt;
+&lt;input type=&quot;button&quot; id=&quot;btnAddAnother&quot; value=&quot;Add Another Item&quot; /&gt;
+&lt;br /&gt;
+&lt;input type=&quot;submit&quot; value=&quot;Save&quot; /&gt;
+&lt;/fieldset&gt;
+&lt;/form&gt;</p>
+
+<p></pre></p>
+
+<p>The partial view for each item:</p>
+
+<p><pre class="syntax html"></p>
+
+<p>&lt;div class=&quot;itemContent&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;&lt;%= ViewData[&quot;Prefix&quot;] + &quot;.Index&quot; %&gt;&quot; value=&quot;&lt;%=ViewData[&quot;GUID&quot;] %&gt;&quot; /&gt;
+&lt;label&gt;Item: &lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;&lt;%= ViewData[&quot;Prefix&quot;]&Acirc;&nbsp; + &quot;[&quot; + ViewData[&quot;GUID&quot;] + &quot;].Name&quot; %&gt;&quot; /&gt;
+&lt;br /&gt;
+&lt;label&gt;Quantity: &lt;/label&gt;&lt;input type=&quot;text&quot; name=&quot;&lt;%= ViewData[&quot;Prefix&quot;] + &quot;[&quot; + ViewData[&quot;GUID&quot;] + &quot;].Quantity&quot; %&gt;&quot; /&gt;
+&lt;br /&gt;
+&lt;/div&gt;</p>
+
+<p></pre></p>
+
+<p>I chose to make the &#8220;prefix&#8221; I need a variable so I can potentially use this same view in other forms if needed.  I may want to put this form somewhere else, where the server argument isn&#8217;t myList, but something else- I could forgo a parameter of ShoppingList and want to post a list of ShoppingItems.  This is useful when adding some sort of &#8220;update&#8221; feature in another section of page- say, when I already have a ShoppingList and I&#8217;m updating with a new list of items.</p>
+
+<p>On the client side I simply wire up my button to request the html snippet from the server and inject that snippet with jQuery:</p>
+
+<p><pre class="syntax js"></p>
+
+<p>$(document).ready(function() {
+$(&quot;#btnAddAnother&quot;).click(function() {
+$.ajax(
+{
+type: &quot;GET&quot;,
+url: &quot;/Shopping/ShoppingItemFormContent/myList.Items&quot;,
+success: function(result) {
+var toInject = $(result);
+$(&quot;#itemContainer&quot;).append(toInject);
+}
+});</p>
+
+<p>})</p>
+
+<p>});</p>
+
+<p></pre></p>
+
+<p>There&#8217;s something I don&#8217;t like about this: I need to call the server every time I need a view.  This isn&#8217;t that snappy, and could create a lot of chatter with the server.  There&#8217;s a way around this for brevity I&#8217;m only going to explain: render the indexer as a specific value which can be parsed out and replaced with something else later.  My original goal is only wanting one place to specify markup: I do not want to have to duplicate code across a project.  But that shouldn&#8217;t mean I need to call the server every time I need an html snippet.  I could make the snippet regular html which can be cached, then use a string or regular expression replace function to replace the hard coded indexer with something unique.</p>
+
+<p><a href="http://michaelhamrah.com/blog/wp-content/uploads/postingalist.zip">You can download the sample project here.</a>
+<a href="http://www.dotnetkicks.com/kick/?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fsaving-dynamically-added-list-items-using-jquery-and-aspnet-mvc%2f"><img src="http://www.dotnetkicks.com/Services/Images/KickItImageGenerator.ashx?url=http%3a%2f%2fwww.michaelhamrah.com%2fblog%2findex.php%2f2008%2f12%2fsaving-dynamically-added-list-items-using-jquery-and-aspnet-mvc%2f&#038;bgcolor=0000CC" border="0" alt="kick it on DotNetKicks.com" /></a></p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow" class="share-twitter sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/?share=twitter" title="Click to share on Twitter" id="sharing-twitter-97"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" class="share-linkedin sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/?share=linkedin" title="Click to share on LinkedIn" id="sharing-linkedin-97"><span>LinkedIn</span></a></li><li class="share-facebook"><a rel="nofollow" class="share-facebook sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/?share=facebook" title="Share on Facebook" id="sharing-facebook-97"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" class="share-google-plus-1 sd-button share-icon" href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/?share=google-plus-1" title="Click to share on Google+" id="sharing-google-97"><span>Google +1</span></a></li><li class="share-end"></li></ul><div class="sharing-clear"></div></div></div></div><div class='yarpp-related'>
+<strong class="related_posts">Related Posts:</strong> <ol>
+<li><a href='http://www.michaelhamrah.com/blog/2009/12/organizing-javascript-for-event-pooling-with-jquery/' rel='bookmark' title='Organizing Javascript for Event Pooling with jQuery'>Organizing Javascript for Event Pooling with jQuery</a></li>
+</ol>
+<img src='http://yarpp.org/pixels/288c3ec03cb337c2e83ff8ec6c6de897'/>
+</div>
+			</div><!-- .entry-content -->
+
+	<footer class="entry-meta">
+		Posted on <a href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/" title="8:13 pm" rel="bookmark"><time class="entry-date" datetime="2008-12-14T20:13:48+00:00" pubdate>December 14, 2008</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="http://www.michaelhamrah.com/blog/author/admin/" title="View all posts by Michael" rel="author">Michael</a></span></span>.		This entry was posted in <a href="http://www.michaelhamrah.com/blog/category/programming/" title="View all posts in Programming" rel="category tag">Programming</a> and tagged <a href="http://www.michaelhamrah.com/blog/tag/aspnetmvc/" rel="tag">aspnetmvc</a>, <a href="http://www.michaelhamrah.com/blog/tag/jquery/" rel="tag">jquery</a>. Bookmark the <a href="http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/" title="Permalink to Saving dynamically added list items using jQuery and ASP.NET MVC" rel="bookmark">permalink</a>.
+			</footer><!-- .entry-meta -->
+</article><!-- #post-97 -->
+
+					<nav role="navigation" id="nav-below" class="site-navigation post-navigation">
+		<h1 class="assistive-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="http://www.michaelhamrah.com/blog/2008/12/hiring-software-developers-the-in-house-interview-open-ended-questions/" rel="prev"><span class="meta-nav">&larr;</span> Hiring Software Developers: The In House Interview (Open Ended Questions)</a></div>		<div class="nav-next"><a href="http://www.michaelhamrah.com/blog/2008/12/understand-unit-testing-and-td-getting-better-code-coverage/" rel="next">Understand Unit Testing and TDD: Getting Better Code Coverage <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+				
+<div id="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="comment even thread-even depth-1" id="dsq-comment-18">
+        <div id="dsq-comment-header-18" class="dsq-comment-header">
+            <cite id="dsq-cite-18">
+http://webdevvote.com                <span id="dsq-author-user-18">WebDevVote</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-18" class="dsq-comment-body">
+            <div id="dsq-comment-message-18" class="dsq-comment-message"><p>You are voted!
+Track back from <a href="http://webdevvote.com/Tips_And_Tricks/Saving_dynamically_added_list_items_using_jQuery_and_ASP_NET_MVC" rel="nofollow">http://webdevvote.com/Tips_And_Tricks/Saving_dynamically_added_list_items_using_jQuery_and_ASP_NET_MVC</a></p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-149">
+        <div id="dsq-comment-header-149" class="dsq-comment-header">
+            <cite id="dsq-cite-149">
+                <span id="dsq-author-user-149">DucDigital</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-149" class="dsq-comment-body">
+            <div id="dsq-comment-message-149" class="dsq-comment-message"><p>Added to fav</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-1891">
+        <div id="dsq-comment-header-1891" class="dsq-comment-header">
+            <cite id="dsq-cite-1891">
+                <span id="dsq-author-user-1891">guido</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1891" class="dsq-comment-body">
+            <div id="dsq-comment-message-1891" class="dsq-comment-message"><p>I cant dowload your project &#8230; the link is missing!</p>
+</div>
+        </div>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-1921">
+        <div id="dsq-comment-header-1921" class="dsq-comment-header">
+            <cite id="dsq-cite-1921">
+                <span id="dsq-author-user-1921">Ic3m4n1989</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-1921" class="dsq-comment-body">
+            <div id="dsq-comment-message-1921" class="dsq-comment-message"><p>Awesome! This is exactly what I am looking for. I would like to see first hand how it works, any way you can fix that download link. I know its an old post but it would be greatly appreciated!</p>
+</div>
+        </div>
+
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://www.michaelhamrah.com/blog/2008/12/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc/';
+    var disqus_identifier = '97 http://www.michaelhamrah.com/blog/?p=97';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'adventuresinhttpcontext';
+    var disqus_title = "Saving dynamically added list items using jQuery and ASP.NET MVC";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+        config.language = '';
+
+        /*
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = '?cf_action=sync_comments&post_id=97';
+
+            var firstScript = document.getElementsByTagName( "script" )[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+                    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+        ],
+        'trackback_url': "http:\/\/www.michaelhamrah.com\/blog\/2008\/12\/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc\/trackback\/"    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.' + 'disqus.com' + '/embed.js?pname=wordpress&pver=2.74';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</script>
+
+			
+			</div><!-- #content .site-content -->
+		</div><!-- #primary .content-area -->
+
+		<div id="secondary" class="widget-area" role="complementary">
+						<aside id="twitter-3" class="widget widget_twitter"><h1 class="widget-title"><a href='http://twitter.com/mhamrah'>Twitter Updates</a></h1><ul class='tweets'>
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> Ja, es ist gut. Es ist gut. 				<a href="http://twitter.com/mhamrah/statuses/312538977448116224" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				@<a href='http://twitter.com/agebhard'>agebhard</a> I picture you sitting on a log cabin porch smoking a huge pipe, angrily grinning at the horizon, but it&#039;s really a German smile. 				<a href="http://twitter.com/mhamrah/statuses/312537991950249984" class="timesince">2&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			
+			<li>
+				RT @<a href='http://twitter.com/subchild'>subchild</a>: Digg Blog, We&#039;re Building A Reader: <a href="http://blog.digg.com/post/45355701332/were-building-a-reader#.UUJTagci1Pw.twitter"> blog.digg.com/post/453557013…</a> 				<a href="http://twitter.com/mhamrah/statuses/312338856890466304" class="timesince">16&nbsp;hours&nbsp;ago</a>
+			</li>
+
+			</ul></aside>		</div><!-- #secondary .widget-area -->
+
+	</div><!-- #main .site-main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/" rel="generator">Proudly powered by WordPress</a> Theme: Publish by <a href="http://kovshenin.com/" rel="designer">Konstantin Kovshenin</a>.		</div><!-- .site-info -->
+	</footer><!-- #colophon .site-footer -->
+</div><!-- #page .hfeed .site -->
+
+	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		WPCOM_sharing_counts = {"http:\/\/www.michaelhamrah.com\/blog\/2008\/12\/saving-dynamically-added-list-items-using-jquery-and-aspnet-mvc\/":97}	</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/sharedaddy/sharing.js?ver=20121205'></script>
+		<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=600,height=600' );
+				return false;
+			});
+		});
+		</script>
+		<script type='text/javascript' src='http://platform.twitter.com/widgets.js?ver=20111117'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201311'></script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?ver=2013Maraa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/plugins/jetpack/modules/wpgroho.js?ver=3.5.1'></script>
+<script type='text/javascript' src='http://www.michaelhamrah.com/blog/wp-content/themes/publish/js/small-menu.js?ver=20120206'></script>
+
+	<script src="http://stats.wordpress.com/e-201311.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.2',blog:'5687098',post:'97',tz:'-4'});
+	var load_cmc = function(){linktracker_init(5687098,97,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.176 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-03-15 11:07:46 -->
+
+<!-- super cache -->

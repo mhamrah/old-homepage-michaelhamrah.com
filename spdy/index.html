@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>SPDY://what?</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>SPDY://what?</h1>
+					<h3>Protocols, Transports, and Speed</h3>
+					<p>
+						<small>Created by <a href="http://michaelhamrah.com">Michael Hamrah</a> / <a href="http://twitter.com/mhamrah">@mhamrah</a></small>
+					</p>
+          <a href="http://www.flickr.com/photos/hamrah/7999678615/" title="Hot air balloon over Goreme, Cappadocia by mhamrah, on Flickr"><img src="http://farm9.staticflickr.com/8319/7999678615_08bc552cb4.jpg" width="500" height="375" alt="Hot air balloon over Goreme, Cappadocia"></a>
+				</section>
+
+				<section>
+					<h2>What problem are we trying to solve?</h2>
+					<p>Web sites are slow*</p>
+				</section>
+
+        <section>
+          <h2>How do we want to solve it?</h2>
+          <p>We dont!</p>
+        </section>
+
+        <section>
+          <h2>Is HTTP that bad?</h2>
+          <pre><code contenteditable>
+VERB /some/path/to/content HTTP/1.1
+Host: www.somehost.com 
+Accept: text/html
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31
+Connection: Keep-Alive
+Content-Length: 20
+
+Maybe some body here
+</code></pre>
+        </section>
+        <section>
+          <h2>A quick detour for TCP</h2>
+          <h3>What goes into a connection?</h3>
+          <ul>
+            <li>Round trip: Syn/Syn-Ack/Ack (LATENCY!)</li>
+            <li>NYC to SFC: ~2530mi, RTT in vacuum: 27ms, RTT in fiber: 41.04ms</li>
+            <li>Slow-Start/Window Scaling (Diminishing returns on bandwidth)</li>
+          </ul>
+        </section>
+        <section>
+          <h2>How do we solve this now?</h2>
+          <ul>
+            <li>Http 1.1: Keep-alive default (option for 1.0</li>
+            <li>Http 1.1: Pipelining (not good enough, maybe not even used)</li>
+             
+            <li>Browsers: 6-8 max concurrent connections per server</li>
+            <li>Think of 1mb of data split 1, 10, 100 ways</li>
+            <li>cache-control</li>
+            <li>Minimize connections (sprites, minification, domain sharding)</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Wasn't this talk on SPDY?</h2>
+          <p>SPDY embraces HTTP, don't reinvent wheel.</p>
+          <p>It's not WebSockets, different problem.</p>
+        </section>
+        <section>
+          <h2>Multiplexing</h2>
+          <p>Spdy uses one persistent SSL connection and multiplexes requests.</p>
+          <ul>
+            <li>True duplex; no waiting.</li>
+            <li>Better window scaling</li>
+            <li>Frames replace individual request/response (Control Frames/Data Frames)</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Compressed Headers</h2>
+          <p>More important than you may realize! Cookies, repetitive headers, etc.</p>
+        </section>
+        <section>
+          <h2>Content Prioritization</h2>
+          <p>Have some control between browser/server<p>
+        </section>
+        <section>
+          <h2>Server Push/Server Hint</h2>
+          <p>Server can send or suggest new resources without client having to parse html</p>
+        </section>
+
+
+        <section>
+          <h2>Spdy: Try It!</h2>
+          <p>TLS connection uses NPN (Next Protocol Negotitation to upgrade to SPDY)</p>
+          <p>HTTP semantics do not change</p>  
+
+          <p>Support for node.js (node-spdy), NGINX, Apache</p>
+          <p><a href="http://dev.chromium.org/spdy">http://dev.chromium.org/spdy</a></p>
+          <p>HTTP 2.0 will be largerly based on SPDY</p>
+        </section>
+        <section>
+          <h2>Links</h2>
+          <ul>
+            <li><a href="http://dev.chromium.org/spdy/spdy-whitepaper">Spdy Whitepaper</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/TCP_tuning">TCP Tuning</a></li>
+            <li><a href="http://www.igvita.com/2012/10/31/simple-spdy-and-npn-negotiation-with-haproxy/">Content Negotiation with HAProxy</a></li>
+            <li><a href="http://www.chromium.org/spdy/spdy-best-practices">Best Practices</a></li>
+            <li><a href="https://mozillaignite.org/resources/labs/lab-5-spdy-eliminating-web-bottlenecks-and-taking-full-advantage-1-gbs/">Mozilla learning lab</a></li>
+          </ul>
+        </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

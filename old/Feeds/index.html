@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>
+			EWS: Create a Feed
+		</title>
+		<meta name="generator" content="TextMate http://macromates.com/">
+		<meta name="author" content="Michael Hamrah">
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' type='text/javascript'>
+</script>
+		<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js' type='text/javascript'>
+</script>
+		<script src='app.js' type='text/javascript'>
+</script>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset/reset-min.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		Note: this page contains no validation yet, no autosuggest, and the "advanced mode" is not hooked up.  It's meant to show active/deactivate UX. <b>If you deactivate a filter, then the filter should clear it's contents</b>
+		<br />	<br />
+		<a href="detail.html">View a Detail Page </a>
+			<br />	<br />
+		<div class="main">  
+			<h1>
+				Create a Feed
+			</h1>
+	
+		<div class="container borderRadius">
+			<h2>
+				Feed Information
+			</h2>
+			<div class='containerBody'>
+				Name, etc.
+			</div>
+		</div>
+		<div class="container borderRadius">
+			<h2>
+				Feed Filters
+			</h2>
+			<div class="containerBody">
+				<div id="info">
+					<p>
+						By default, a Feed will include all content. You apply <i>filters</i> to narrow down the content contained in a feed. You must specify at least one filter, and each filter must have at least one value.
+					</p>
+					<p>
+						Choose the filters you would like to apply by activating a filter from the list below. Once you activate a filter, you can specify the values for that filter. Filters that are not specified will be ignored.
+					</p>
+					<p>
+						Filters are always combined together by an "and" rule. As an example, if you select the "Getty Images Wholly Owned", a Byline Title of "Staff", and an Iptc Category of "Sports" only <i>Staff images within the Getty Wholly Owned group which have an Iptc Category of Sports</i> will be included in the Feed.
+					</p>
+					<p>
+						If you cannot define your feed using the filters below, work with the Ftp Feed Support team to create a Feed using the "Advanced Mode" feature.
+					</p>
+				</div>
+				<div class='clearfix'>
+				<h3 class='inline'>
+					Available Filters
+				</h3>
+				<div class="advanced">
+				<a href="#" class='advanced'>Switch to Advanced Mode</a>
+				</div>
+				</div>
+				<div class="filterBox">
+					<div class="filterItem active borderRadius">
+						<div class="titleContainer">
+							<h4>
+								Ownership Grouping
+							</h4><a id="ownershipStatus" href="#" class="status" name="ownershipStatus">Active</a><a href="#" class="deactivate">Remove From Active Filters</a>
+						</div>
+						<div class="filterBody">
+							<div class="filterInfo">
+								Select any combination of Ownership groupings. Only assets which match a selected grouping will be contained in the feed.
+							</div>
+							<ul>
+								<li>
+									<input type='checkbox' id='gyiwo'><label for='gyiwo'>Getty Images Wholly Owned</label><span class='info'>Parent Source is Getty Images; Byline Title is Staff, String, Pool or Handout. Does not include MediaVast.</span>
+								</li>
+								<li>
+									<input type='checkbox' id='gyicontrib'><label for='gyicontrib'>Getty Images Contributor</label><span class='info'>Parent Source is Getty Images; Byline Title is Contributor. Does not include MediaVast.</span>
+								</li>
+								<li>
+									<input type='checkbox' id='mvwo'><label for='mvwo'>MediaVast Wholly Owned</label><span class='info'>Source is WireImage; FilmMagic, or Buzzfoto; Byline Title is Staff, String, Pool or Handout.</span>
+								</li>
+								<li>
+									<input type='checkbox' id='mvcontrib'><label for='mvcontrib'>MediaVast Contributor</label><span class='info'>Source is WireImage, FilmMagic, or Buzzfoto; Byline Title is Contributor</span>
+								</li>
+								<li>
+									<input type='checkbox' id='afp'><label for='afp'>AFP</label><span class='info'>Parent Source is AFP</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="filterItem inactive borderRadius">
+						<div class="titleContainer">
+							<h4>
+								Byline Titles
+							</h4><a id="bylineTitleStatus" href="#" class="status" name="bylineTitleStatus">Not Active</a>
+						</div>
+						<div class="filterBody">
+							<div class="filterInfo">
+								Select any combination of Byline Titles. Only assets which match one of the Byline Titles below will be included. If you select an Ownership Grouping, only the Byline Titles below will be included in the feed.
+							</div>
+							<ul class="inline">
+								<li>
+									<input type='checkbox' id='staff'><label for='staff'>Staff</label>
+								</li>
+								<li>
+									<input type='checkbox' id='stringer'><label for='stringer'>Stringer</label>
+								</li>
+								<li>
+									<input type='checkbox' id='contributor'><label for='contributor'>Contributor</label>
+								</li>
+								<li>
+									<input type='checkbox' id='pool'><label for='pool'>Pool</label>
+								</li>
+								<li>
+									<input type='checkbox' id='handout'><label for='handout'>Handout</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="filterItem inactive borderRadius">
+						<div class="titleContainer">
+							<h4>
+								Iptc Categories
+							</h4><a id="iptcCatStatus" href="#" class="status" name="iptcCatStatus">Not Active</a>
+						</div>
+						<div class="filterBody">
+							<div class="filterInfo">
+								Select any combination of Iptc Categries. Only assets which match one of the Iptc Categories below will be included.
+							</div>
+							<ul class="inline">
+								<li>
+									<input type='checkbox' id='i'><label for='i'>I - International News</label>
+								</li>
+								<li>
+									<input type='checkbox' id='a'><label for='a'>A - US Domestic News</label>
+								</li>
+								<li>
+									<input type='checkbox' id='s'><label for='s'>S - Sports</label>
+								</li>
+								<li>
+									<input type='checkbox' id='e'><label for='e'>E - Entertainment</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="filterItem inactive borderRadius">
+						<div class="titleContainer">
+							<h4>
+								Sources
+							</h4><a id="iptcCatStatus" href="#" class="status" name="sourceStatus">Not Active</a>
+						</div>
+						<div class="filterBody">
+							<div class="filterInfo">
+								Select any number of Sources. You can either include the selected sources, in which case only the selected sources will be included in the Feed; or exclude sources, in which case anything <b>but</b> the selected sources will be included in the Feed. As always, these are combined with other Filters, so if you are combining sources with Groupings, you need to ensure the Feed will work. For instance, an inclusion of WireImage with the GYI Wholly Owned Grouping will never include an asset, because an asset can never by GYI Wholly Owned <i>and</i> WireImage. To create a feed of GYI Wholly Owned <i>or</i> WireImage, use the Advanced Mode feature.
+							</div>
+							<div class="infoContainer clearfix">
+								<div class="left">
+									<ul>
+										<li>
+											<input type='radio' group='source' id='is' checked><label for='is'>Include Only These Sources</label>
+										</li>
+										<li>
+											<input type='radio' group='source' id='xs'><label for='xs'>Do Not Include These Sources</label>
+										</li>
+									</ul>
+								</div>
+								<div class='multiSelect'>
+									<input type='text' value="Select Multiple Sources" class="watermark">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

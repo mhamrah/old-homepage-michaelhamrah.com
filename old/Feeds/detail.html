@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>
+			EWS: Feed Detail - Getty Images Wholly Owned
+		</title>
+		<meta name="generator" content="TextMate http://macromates.com/">
+		<meta name="author" content="Michael Hamrah">
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' type='text/javascript'>
+</script>
+		<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js' type='text/javascript'>
+</script>
+	
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset/reset-min.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<p>
+			Note: Detail Page for a Feed. Active Filters listed on top.<br>
+			<br>
+			<a href="index.html">View Create Page</a><br>
+			<br>
+		</p>
+		<div class="main">
+			<h1>
+			 Feed Detail: Wholly Owned by Iptc Category
+			</h1>
+			<div class="container borderRadius">
+				<h2>
+					Feed Information
+				</h2>
+				<div class='containerBody'>
+					Name, etc.
+				</div>
+			</div>
+			<div class="container borderRadius">
+				<h2>
+					Feed Filters
+				</h2>
+				<div class="containerBody">
+					<div id="info">
+						<p>
+							Only the Active filters below are used to define this feed.  An asset must match all of the active filters applied.
+						</p>
+					</div>
+					<div class='clearfix'>
+						<h3 class='inline'>
+							Active Filters
+						</h3>
+					</div>
+					<div class="filterBox">
+						<div class="filterItem active borderRadius">
+							<div class="titleContainer">
+								<h4>
+									Ownership Grouping
+								</h4><a id="ownershipStatus" href="#" class="status" name="ownershipStatus">Active</a>
+							</div>
+							<div class="filterBody">
+								<div class="filterInfo">
+									An asset must fall into one of the selected groupings:
+								</div>
+								<ul>
+									<li>
+										<img src="ok.png" height='16px' width='16px' /><label for='gyiwo'>Getty Images Wholly Owned</label><span class='info'>Parent Source is Getty Images; Byline Title is Staff, String, Pool or Handout. Does not include MediaVast.</span>
+									</li>
+									<li>
+									<img src="cancel.png" height='16px' width='16px' /><label for='gyicontrib'>Getty Images Contributor</label><span class='info'>Parent Source is Getty Images; Byline Title is Contributor. Does not include MediaVast.</span>
+									</li>
+									<li>
+									<img src="cancel.png" height='16px' width='16px' /><label for='mvwo'>MediaVast Wholly Owned</label><span class='info'>Source is WireImage; FilmMagic, or Buzzfoto; Byline Title is Staff, String, Pool or Handout.</span>
+									</li>
+									<li>
+										<img src="cancel.png" height='16px' width='16px' /><label for='mvcontrib'>MediaVast Contributor</label><span class='info'>Source is WireImage, FilmMagic, or Buzzfoto; Byline Title is Contributor</span>
+									</li>
+									<li>
+									<img src="cancel.png" height='16px' width='16px' /><label for='afp'>AFP</label><span class='info'>Parent Source is AFP</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="filterItem active borderRadius">
+							<div class="titleContainer">
+								<h4>
+									Iptc Categories
+								</h4><a id="iptcCatStatus" href="#" class="status" name="iptcCatStatus">Active</a>
+							</div>
+							<div class="filterBody">
+								<div class="filterInfo">
+									An asset must contain one of the following Iptc categories:
+								</div>
+								<ul class="inline">
+									<li>
+											<img src="ok.png" height='16px' width='16px' /><label for='i'>I - International News</label>
+									</li>
+									<li>
+											<img src="ok.png" height='16px' width='16px' /><label for='a'>A - US Domestic News</label>
+									</li>
+									<li>
+										<img src="cancel.png" height='16px' width='16px' /><label for='s'>S - Sports</label>
+									</li>
+									<li>
+										<img src="cancel.png" height='16px' width='16px' /><label for='e'>E - Entertainment</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class='clearfix'>
+						<h3 class='inline'>
+							Inactive Filters
+						</h3>
+					</div>
+					<div class="filterBox">
+						<div class="filterItem inactive borderRadius">
+							<div class="titleContainer">
+								<h4>
+									Byline Titles
+								</h4><a id="bylineTitleStatus" href="#" class="status" name="bylineTitleStatus">Not Active</a>
+							</div>
+							<div class="filterBody">
+								<div class="filterInfo">
+									Select any combination of Byline Titles. Only assets which match one of the Byline Titles below will be included. If you select an Ownership Grouping, only the Byline Titles below will be included in the feed.
+								</div>
+								<ul class="inline">
+									<li>
+										<input type='checkbox' id='staff' disabled /><label for='staff'>Staff</label>
+									</li>
+									<li>
+										<input type='checkbox' id='stringer' disabled /><label for='stringer'>Stringer</label>
+									</li>
+									<li>
+										<input type='checkbox' id='contributor' disabled /><label for='contributor'>Contributor</label>
+									</li>
+									<li>
+										<input type='checkbox' id='pool' disabled /><label for='pool'>Pool</label>
+									</li>
+									<li>
+										<input type='checkbox' id='handout' disabled /><label for='handout'>Handout</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="filterItem inactive borderRadius">
+							<div class="titleContainer">
+								<h4>
+									Sources
+								</h4><a id="iptcCatStatus" href="#" class="status" name="sourceStatus">Not Active</a>
+							</div>
+							<div class="filterBody">
+								<div class="filterInfo">
+									Select any number of Sources. You can either include the selected sources, in which case only the selected sources will be included in the Feed; or exclude sources, in which case anything <b>but</b> the selected sources will be included in the Feed. As always, these are combined with other Filters, so if you are combining sources with Groupings, you need to ensure the Feed will work. For instance, an inclusion of WireImage with the GYI Wholly Owned Grouping will never include an asset, because an asset can never by GYI Wholly Owned <i>and</i> WireImage. To create a feed of GYI Wholly Owned <i>or</i> WireImage, use the Advanced Mode feature.
+								</div>
+								<div class="infoContainer clearfix">
+									<div class="left">
+										<ul>
+											<li>
+												<input type='radio' group='source' id='is' disabled><label for='is'>Include Only These Sources</label>
+											</li>
+											<li>
+												<input type='radio' group='source' id='xs' disabled><label for='xs'>Do Not Include These Sources</label>
+											</li>
+										</ul>
+									</div>
+									<div class='multiSelect'>
+										No Sources Selected.
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
